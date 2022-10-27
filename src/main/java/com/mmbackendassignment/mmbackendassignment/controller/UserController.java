@@ -2,8 +2,12 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.service.UserService;
+import com.mmbackendassignment.mmbackendassignment.util.BindingResultUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -30,8 +34,9 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<String> createUser( @RequestBody AuthDto dto ){
-
+    public ResponseEntity<String> createUser( @Valid @RequestBody AuthDto dto,
+                                              BindingResult br){
+        BindingResultUtil.check( br );
         return ResponseEntity.ok().body( service.createUser(dto) );
     }
 
@@ -57,7 +62,7 @@ public class UserController {
 
     @DeleteMapping("/{username}/{role}")
     public ResponseEntity<String> removeRole( @PathVariable("username") String username,
-                                           @PathVariable("role") String role) {
+                                              @PathVariable("role") String role) {
 
         return ResponseEntity.ok().body( service.removeRole( username, role.toUpperCase() ));
     }

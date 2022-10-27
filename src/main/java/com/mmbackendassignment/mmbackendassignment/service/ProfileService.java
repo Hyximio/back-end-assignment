@@ -1,7 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.service;
 
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
-import com.mmbackendassignment.mmbackendassignment.exceptions.UsernameNotFoundException;
+import com.mmbackendassignment.mmbackendassignment.exception.UsernameNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Profile;
 import com.mmbackendassignment.mmbackendassignment.model.User;
 import com.mmbackendassignment.mmbackendassignment.repository.ProfileRepository;
@@ -31,6 +31,11 @@ public class ProfileService {
         return "Done";
     }
 
+    public ProfileInputDto getProfile( String username ){
+        User user = getUserByName( username );
+        return ProfileToDto( user.getProfile() );
+    }
+
     public String createProfile(String username, ProfileInputDto dto){
         User user = getUserByName( username );
 
@@ -41,6 +46,10 @@ public class ProfileService {
         userRepo.save( user );
 
         return "Done";
+    }
+
+    private ProfileInputDto ProfileToDto( Profile profile ) {
+        return (ProfileInputDto) Convert.objects( profile, new ProfileInputDto() );
     }
 
     private Profile dtoToProfile( ProfileInputDto dto ){

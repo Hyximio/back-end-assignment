@@ -1,4 +1,4 @@
-package com.mmbackendassignment.mmbackendassignment.exceptions;
+package com.mmbackendassignment.mmbackendassignment.exception;
 
 
 public class RecordNotFoundException extends RuntimeException {

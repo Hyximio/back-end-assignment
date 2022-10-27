@@ -1,9 +1,6 @@
 package com.mmbackendassignment.mmbackendassignment.controller;
 
-import com.mmbackendassignment.mmbackendassignment.exceptions.BadRequestException;
-import com.mmbackendassignment.mmbackendassignment.exceptions.RecordNotFoundException;
-import com.mmbackendassignment.mmbackendassignment.exceptions.RoleNotFoundException;
-import com.mmbackendassignment.mmbackendassignment.exceptions.UsernameNotFoundException;
+import com.mmbackendassignment.mmbackendassignment.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,7 +32,12 @@ public class ExceptionController {
     public ResponseEntity<Object> exception(BadRequestException exception) {
 
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
+    @ExceptionHandler(value = BindingResultException.class)
+    public ResponseEntity<Object> exception(BindingResultException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 
 }

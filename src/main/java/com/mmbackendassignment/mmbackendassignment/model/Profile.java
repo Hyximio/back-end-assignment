@@ -1,6 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -16,7 +17,7 @@ public class Profile {
     private String email;
     private String phoneNumber;
     private char gender;
-    private Date dob;
+    private LocalDate dob;
 
 //    private Client client;
 //    private Owner owner;
@@ -72,11 +73,11 @@ public class Profile {
         this.gender = gender;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 }

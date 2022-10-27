@@ -1,4 +1,4 @@
-package com.mmbackendassignment.mmbackendassignment.exceptions;
+package com.mmbackendassignment.mmbackendassignment.exception;
 
 public class BadRequestException extends RuntimeException {
     private static final long serialVersionUID = 1L;

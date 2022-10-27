@@ -19,11 +19,28 @@ public class Profile {
     private char gender;
     private LocalDate dob;
 
-//    private Client client;
-//    private Owner owner;
+    //    private Client client;
+    @OneToOne( mappedBy = "profile")
+    private Owner owner;
 
     @OneToOne( mappedBy = "profile")
     private User user;
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public long getId() {
         return id;

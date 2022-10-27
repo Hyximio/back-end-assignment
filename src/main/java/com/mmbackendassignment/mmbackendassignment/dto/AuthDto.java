@@ -1,6 +1,6 @@
 package com.mmbackendassignment.mmbackendassignment.dto;
 
-public class UserInputDto {
+public class AuthDto {
 
     public String username;
     public String password;

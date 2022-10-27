@@ -1,15 +1,21 @@
 package com.mmbackendassignment.mmbackendassignment.service;
 
-import com.mmbackendassignment.mmbackendassignment.dto.UserInputDto;
-import com.mmbackendassignment.mmbackendassignment.dto.PageOutputDto;
+import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
+import com.mmbackendassignment.mmbackendassignment.dto.PageDto;
 import com.mmbackendassignment.mmbackendassignment.dto.UserOutputDto;
+import com.mmbackendassignment.mmbackendassignment.exceptions.RoleNotFoundException;
+import com.mmbackendassignment.mmbackendassignment.exceptions.SortNotSupportedException;
+import com.mmbackendassignment.mmbackendassignment.exceptions.UsernameNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Role;
 import com.mmbackendassignment.mmbackendassignment.model.User;
+import com.mmbackendassignment.mmbackendassignment.repository.RoleRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,19 +24,32 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository repo;
+    private final RoleRepository roleRepo;
 
-    UserService(UserRepository repo){
+    UserService(UserRepository repo, RoleRepository roleRepo ){
         this.repo = repo;
+        this.roleRepo = roleRepo;
     }
 
-    public PageOutputDto getUsers(int page, int size ){
-        PageRequest pr = PageRequest.of(page, size);
+    public UserOutputDto getUser( String username ){
+        User user = getUserByName(username);
+        return userToDto( user );
+    }
+
+    public PageDto getUsers(int page, int size, String sort ){
+
+        sort = getSortName( sort );
+
+        PageRequest pr = sort.equals("username") || sort.equals("roles") ?
+            PageRequest.of(page, size, Sort.by("username")) :
+            PageRequest.of(page, size, Sort.by(sort).and(Sort.by("username")));
+
         Page<User> pageContent = repo.findAll( pr );
 
-        PageOutputDto userContent = new PageOutputDto(
-                pageContent.getNumberOfElements(),
-                page,
-                pageContent.getTotalPages()-1
+        PageDto userContent = new PageDto(
+            pageContent.getNumberOfElements(),
+            page,
+            pageContent.getTotalPages()
         );
 
         List<User> contentList = pageContent.getContent();
@@ -42,7 +61,7 @@ public class UserService {
         return userContent;
     }
 
-    public String createUser( UserInputDto dto ){
+    public String createUser( AuthDto dto ){
 
         Optional<User> existence = repo.findById( dto.username );
 
@@ -51,11 +70,45 @@ public class UserService {
             User user = new User( dto.username, dto.password );
 
             repo.save(user);
-
             return "Done";
         } else {
             return "Username is already in use";
         }
+    }
+
+    public String addRole( String username, String role ){
+        User user = getUserByName(username);
+        if ( doesRoleExist( role ) ) {
+            user.addRole( role );
+            repo.save( user );
+        }
+        return "Done";
+    }
+
+    public String removeRole( String username, String role ) {
+        User user = getUserByName(username);
+        user.removeRole(role);
+        repo.save(user);
+        return "Done";
+    }
+
+    public String deleteUser( String username ){
+        getUserByName(username);
+        repo.deleteById(username);
+        return ("User '" + username + "' is deleted");
+    }
+
+    public String setEnabled( String username, boolean enabled ){
+        User user = getUserByName(username);
+        user.setEnabled( enabled );
+        repo.save( user );
+        return ("User '" + username + "' enabled set to '" + enabled + "'");
+    }
+
+    private User getUserByName( String username ){
+        Optional<User> op = repo.findById( username );
+        if (op.isPresent()) return op.get();
+        throw new UsernameNotFoundException( username );
     }
 
     private UserOutputDto userToDto( User user ){
@@ -64,14 +117,42 @@ public class UserService {
                 user.isEnabled()
         );
 
+        // Convert collection to String[]
         String[] roles = new String[ user.getRoles().size() ];
-
-        List<Role> roleList = new ArrayList<Role>( user.getRoles() );
+        List<Role> roleList = new ArrayList<>( user.getRoles() );
         for( int r=0; r < user.getRoles().size(); r++ ){
             roles[r] = roleList.get(r).getRole();
         }
         dto.roles = roles;
 
         return dto;
+    }
+
+    private boolean doesRoleExist( String role ){
+        List<Role> roles = roleRepo.findAll();
+
+        for( Role r : roles ){
+            if (r.getRole().equals( role.toUpperCase() )){
+                return true;
+            }
+        }
+
+        throw new RoleNotFoundException( role );
+    }
+
+    private String getSortName( String sort ){
+        boolean sortExist = false;
+        for (Field f : UserOutputDto.class.getDeclaredFields() ){
+            if (f.getName().equalsIgnoreCase( sort )){
+                sort = f.getName();
+                sortExist = true;
+                break;
+            }
+        }
+
+        if (!sortExist){
+            throw new SortNotSupportedException( sort );
+        }
+        return sort;
     }
 }

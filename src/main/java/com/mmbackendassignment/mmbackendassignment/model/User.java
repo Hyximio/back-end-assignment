@@ -15,7 +15,18 @@ public class User {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<Role>();
+    private Collection<Role> roles = new ArrayList<>();
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    @OneToOne
+    private Profile profile;
 
     private boolean enabled = true;
 
@@ -24,11 +35,8 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-
-        Collection<Role> defaultRoles = new ArrayList<Role>();
-        defaultRoles.add( new Role( "CLIENT" ) );
-        this.setRoles( defaultRoles );
-//        this.roles.add( new Role( "CLIENT" ) );
+        // Add default role
+        this.addRole( "CLIENT" );
     }
 
     public String getUsername() {
@@ -59,7 +67,19 @@ public class User {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
+    public void addRole( String role ) {
+
+        boolean exists = false;
+        for( Role r : this.roles ){
+            if (r.getRole().equals(role) ){
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) this.roles.add( new Role( role ) );
+    }
+
+    public void removeRole( String role ){
+        this.roles.removeIf(r -> r.getRole().equals( role ) );
     }
 }

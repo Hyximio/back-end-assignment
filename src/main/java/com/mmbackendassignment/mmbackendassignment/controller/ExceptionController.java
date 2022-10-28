@@ -13,13 +13,6 @@ public class ExceptionController {
     public ResponseEntity<Object> exception(RecordNotFoundException exception) {
 
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
-
-    }
-
-    @ExceptionHandler(value = UsernameNotFoundException.class)
-    public ResponseEntity<Object> exception(UsernameNotFoundException exception) {
-
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = RoleNotFoundException.class)
@@ -36,6 +29,12 @@ public class ExceptionController {
 
     @ExceptionHandler(value = BindingResultException.class)
     public ResponseEntity<Object> exception(BindingResultException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(value = ContractWithOwnException.class)
+    public ResponseEntity<Object> exception(ContractWithOwnException exception) {
 
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }

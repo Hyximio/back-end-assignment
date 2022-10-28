@@ -3,9 +3,7 @@ package com.mmbackendassignment.mmbackendassignment.service;
 import com.mmbackendassignment.mmbackendassignment.dto.AddressOutputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.AddressInputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.PageDto;
-import com.mmbackendassignment.mmbackendassignment.dto.UserOutputDto;
-import com.mmbackendassignment.mmbackendassignment.exception.SortNotSupportedException;
-import com.mmbackendassignment.mmbackendassignment.exception.UsernameNotFoundException;
+import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Address;
 import com.mmbackendassignment.mmbackendassignment.model.Owner;
 import com.mmbackendassignment.mmbackendassignment.model.Profile;
@@ -18,10 +16,8 @@ import com.mmbackendassignment.mmbackendassignment.util.Convert;
 import com.mmbackendassignment.mmbackendassignment.util.PagableUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,6 +79,18 @@ public class AddressService {
         return "Done";
     }
 
+    public String editAddress( long id, AddressInputDto dto){
+        Optional<Address> op = repo.findById( id );
+
+        if ( op.isPresent() ){
+            Address address = (Address) Convert.objects( dto, op.get() );
+            repo.save( address );
+            return "Done";
+        }else{
+            throw new RecordNotFoundException( "address", id);
+        }
+    }
+
     private Address dtoToAddress( AddressInputDto dto ){
         return (Address) Convert.objects( dto, new Address());
     }
@@ -97,7 +105,7 @@ public class AddressService {
     private User getUserByName( String username ){
         Optional<User> op = userRepo.findById( username );
         if (op.isPresent()) return op.get();
-        throw new UsernameNotFoundException( username );
+        throw new RecordNotFoundException( "username", username );
     }
 
 }

@@ -15,18 +15,25 @@ public class FieldController {
         this.service = service;
     }
 
-    @GetMapping("/{fieldId}")
-    public ResponseEntity<?> getField( @PathVariable("fieldId") long fieldId){
-        return ResponseEntity.ok( service.getField( fieldId ));
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getField( @PathVariable("id") long id){
+        return ResponseEntity.ok( service.getField( id ));
     }
+
     @PostMapping("/{addressId}")
     public ResponseEntity<Object> createField(@PathVariable("addressId") long addressId,
                                               @RequestBody FieldInputDto dto){
         return ResponseEntity.ok( service.createField( addressId, dto ));
     }
 
-    @DeleteMapping("/{fieldId}")
-    public ResponseEntity<Object> deleteField(@PathVariable("fieldId") long fieldId){
-        return ResponseEntity.ok( service.deleteField( fieldId ) );
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> editField(@PathVariable("id") long id,
+                                              @RequestBody FieldInputDto dto){
+        return ResponseEntity.ok( service.editField( id, dto ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteField(@PathVariable("id") long id){
+        return ResponseEntity.ok( service.deleteField( id ) );
     }
 }

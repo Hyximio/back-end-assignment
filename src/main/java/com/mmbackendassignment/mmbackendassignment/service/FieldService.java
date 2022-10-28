@@ -5,6 +5,7 @@ import com.mmbackendassignment.mmbackendassignment.dto.FieldOutputDto;
 import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Address;
 import com.mmbackendassignment.mmbackendassignment.model.Field;
+import com.mmbackendassignment.mmbackendassignment.model.Profile;
 import com.mmbackendassignment.mmbackendassignment.repository.AddressRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.FieldRepository;
 import com.mmbackendassignment.mmbackendassignment.util.Convert;
@@ -29,6 +30,7 @@ public class FieldService {
 
         if (op.isPresent() ){
             Field field = op.get();
+
             return fieldToDto( field );
         }else{
             throw new RecordNotFoundException();
@@ -41,7 +43,6 @@ public class FieldService {
         if (op.isPresent() ) {
 
             Address address = op.get();
-
             ArrayList<FieldOutputDto> fieldDtos= new ArrayList<>();
             for( Field f : address.getFields() ){
                 fieldDtos.add( fieldToDto(f) );
@@ -74,6 +75,20 @@ public class FieldService {
         }
     }
 
+    public String editField( long fieldId, FieldInputDto dto ){
+        Optional<Field> op = repo.findById( fieldId );
+
+        if (op.isPresent() ){
+
+            Field field = (Field) Convert.objects(dto, op.get() );
+            repo.save( field );
+
+            return "Done";
+        } else {
+            throw new RecordNotFoundException("field", fieldId );
+        }
+    }
+
     public String deleteField( long fieldId ){
         System.out.println("Try to delete" + fieldId);
         repo.deleteById( fieldId );
@@ -87,6 +102,8 @@ public class FieldService {
     private FieldOutputDto fieldToDto( Field field ){
         FieldOutputDto fieldDto = (FieldOutputDto)Convert.objects( field, new FieldOutputDto() );
         fieldDto.addressId = field.getAddress().getId();
+        fieldDto.features = field.getFeatures();
+        fieldDto.contracts = field.getContractIds();
         return fieldDto;
     }
 }

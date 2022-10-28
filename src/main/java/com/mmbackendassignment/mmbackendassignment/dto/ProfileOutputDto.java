@@ -8,7 +8,7 @@ public class ProfileOutputDto {
     public String lastName;
     public String email;
     public String phoneNumber;
-    public char gender;
+    public Character gender;
     public LocalDate dob;
 
     public Long ownerId;

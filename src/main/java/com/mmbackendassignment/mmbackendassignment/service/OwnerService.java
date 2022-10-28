@@ -2,14 +2,8 @@ package com.mmbackendassignment.mmbackendassignment.service;
 
 import com.mmbackendassignment.mmbackendassignment.dto.OwnerDto;
 import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
-import com.mmbackendassignment.mmbackendassignment.exception.UsernameNotFoundException;
-import com.mmbackendassignment.mmbackendassignment.model.Address;
 import com.mmbackendassignment.mmbackendassignment.model.Owner;
-import com.mmbackendassignment.mmbackendassignment.model.Profile;
-import com.mmbackendassignment.mmbackendassignment.model.User;
 import com.mmbackendassignment.mmbackendassignment.repository.OwnerRepository;
-import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
-import com.mmbackendassignment.mmbackendassignment.util.Convert;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,11 +12,9 @@ import java.util.Optional;
 public class OwnerService {
 
     private final OwnerRepository repo;
-    private final UserRepository userRepo;
 
-    public OwnerService(OwnerRepository repo, UserRepository userRepo) {
+    public OwnerService(OwnerRepository repo) {
         this.repo = repo;
-        this.userRepo = userRepo;
     }
 
     public Object getOwner( long id ){
@@ -32,7 +24,7 @@ public class OwnerService {
 
             return ownerToDto( owner );
         }
-        throw new RecordNotFoundException();
+        throw new RecordNotFoundException( "owner", id );
     }
 
     private OwnerDto ownerToDto( Owner owner ){

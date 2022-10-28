@@ -17,15 +17,7 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    @OneToOne
+    @OneToOne( mappedBy = "user" )
     private Profile profile;
 
     private boolean enabled = true;
@@ -81,5 +73,13 @@ public class User {
 
     public void removeRole( String role ){
         this.roles.removeIf(r -> r.getRole().equals( role ) );
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

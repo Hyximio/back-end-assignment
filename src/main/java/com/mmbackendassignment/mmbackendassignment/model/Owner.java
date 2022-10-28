@@ -12,8 +12,7 @@ public class Owner {
     @GeneratedValue
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "profile_id")
+    @OneToOne( mappedBy = "owner" )
     private Profile profile;
 
     @OneToMany( mappedBy = "owner" )

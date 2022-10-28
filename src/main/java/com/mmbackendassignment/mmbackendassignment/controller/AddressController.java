@@ -29,4 +29,11 @@ public class AddressController {
 
         return ResponseEntity.ok( service.createAddress(username, dto) );
     }
+
+    @PutMapping("/{addressId}")
+    public ResponseEntity<?> editAddress( @PathVariable("addressId") long id,
+                                          @RequestBody AddressInputDto dto){
+
+        return ResponseEntity.ok( service.editAddress(id, dto) );
+    }
 }

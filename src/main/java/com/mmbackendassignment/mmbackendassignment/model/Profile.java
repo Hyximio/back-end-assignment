@@ -16,14 +16,18 @@ public class Profile {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private char gender;
+    private Character gender;
     private LocalDate dob;
 
-    //    private Client client;
-    @OneToOne( mappedBy = "profile" )
+    @OneToOne
+    private Client client;
+
+    @OneToOne
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
-    @OneToOne( mappedBy = "profile" )
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Owner getOwner() {
@@ -86,7 +90,7 @@ public class Profile {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(Character gender) {
         this.gender = gender;
     }
 
@@ -97,4 +101,14 @@ public class Profile {
     public void setDob(LocalDate dob) {
         this.dob = dob;
     }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+
 }

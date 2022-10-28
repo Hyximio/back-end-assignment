@@ -19,7 +19,7 @@ public class ProfileInputDto {
             message = "not a valid phone number")
     public String phoneNumber;
 
-    public char gender;
+    public Character gender;
 
     @Past
     public LocalDate dob;

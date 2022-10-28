@@ -34,12 +34,11 @@ public class ProfileController {
 
     @PutMapping("/{username}")
     public ResponseEntity<?> editProfile( @PathVariable("username") String username,
-                                          @Valid @RequestBody ProfileInputDto dto,
+                                          @RequestBody ProfileInputDto dto,
                                           BindingResult br){
         BindingResultUtil.check( br );
         return ResponseEntity.ok( service.editProfile( username, dto) );
     }
 
-//    @PutMapping("/{username}/picture")
 
 }

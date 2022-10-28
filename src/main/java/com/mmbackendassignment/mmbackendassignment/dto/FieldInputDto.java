@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class FieldInputDto {
 
     public String description;
-    public float meters;
+    public Float meters;
     public ArrayList<String> features;
-    public float pricePerMonth;
-    public float maxHeightMeter;
+    public Float pricePerMonth;
+    public Float maxHeightMeter;
 
 }

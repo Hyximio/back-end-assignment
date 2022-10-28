@@ -3,9 +3,9 @@ package com.mmbackendassignment.mmbackendassignment.service;
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.dto.PageDto;
 import com.mmbackendassignment.mmbackendassignment.dto.UserOutputDto;
+import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.exception.RoleNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.exception.SortNotSupportedException;
-import com.mmbackendassignment.mmbackendassignment.exception.UsernameNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Role;
 import com.mmbackendassignment.mmbackendassignment.model.User;
 import com.mmbackendassignment.mmbackendassignment.repository.RoleRepository;
@@ -108,7 +108,7 @@ public class UserService {
     private User getUserByName( String username ){
         Optional<User> op = repo.findById( username );
         if (op.isPresent()) return op.get();
-        throw new UsernameNotFoundException( username );
+        throw new RecordNotFoundException( "username", username );
     }
 
     private UserOutputDto userToDto( User user ){

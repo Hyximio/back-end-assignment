@@ -2,6 +2,7 @@ package com.mmbackendassignment.mmbackendassignment.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table( name = "fields" )
@@ -12,14 +13,18 @@ public class Field {
     private long id;
 
     private String description;
-    private float meters;
+    private Float meters;
     private ArrayList<String> features;
-    private float pricePerMonth;
-    private float maxHeightMeter;
+    private Float pricePerMonth;
+    private Float maxHeightMeter;
 
     @ManyToOne
-    @JoinColumn( name = "address_id")
+    @JoinColumn( name = "address_id" )
     Address address;
+
+    @OneToMany( mappedBy = "field")
+    List<Contract> contracts;
+
 
     public long getId() {
         return id;
@@ -41,7 +46,7 @@ public class Field {
         this.features = features;
     }
 
-    public void setMeters(float meters) {
+    public void setMeters(Float meters) {
         this.meters = meters;
     }
 
@@ -53,7 +58,7 @@ public class Field {
         return pricePerMonth;
     }
 
-    public void setPricePerMonth(float pricePerMonth) {
+    public void setPricePerMonth(Float pricePerMonth) {
         this.pricePerMonth = pricePerMonth;
     }
 
@@ -61,7 +66,7 @@ public class Field {
         return maxHeightMeter;
     }
 
-    public void setMaxHeightMeter(float maxHeightMeter) {
+    public void setMaxHeightMeter(Float maxHeightMeter) {
         this.maxHeightMeter = maxHeightMeter;
     }
 
@@ -71,5 +76,24 @@ public class Field {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public List<Contract> getContracts() {
+        return contracts;
+    }
+
+    public void setContracts(List<Contract> contracts) {
+        this.contracts = contracts;
+    }
+
+    public ArrayList<Long> getContractIds() {
+
+        ArrayList<Long> contractIds = new ArrayList<>();
+
+        for( Contract c : contracts ){
+            contractIds.add( c.getId() );
+        }
+
+        return contractIds;
     }
 }

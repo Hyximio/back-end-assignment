@@ -56,28 +56,6 @@ public class AddressService {
 
         return PagableUtil.createPageDto( contentDto, pageContent );
 
-        /*
-        sort = getSortName( sort );
-
-        PageRequest pr = PageRequest.of(page, size, Sort.by( sort ));
-
-        Page<Address> pageContent = repo.findAll( pr );
-
-        PageDto addressContent = new PageDto(
-                pageContent.getNumberOfElements(),
-                page,
-                pageContent.getTotalPages()
-        );
-
-        List<Address> contentList = pageContent.getContent();
-
-        for( Address a : contentList ){
-            addressContent.content.add( this.addressToDto(a) );
-        }
-
-        return addressContent;
-        */
-
     }
 
 
@@ -86,7 +64,7 @@ public class AddressService {
 
         Profile profile = user.getProfile();
 
-        // Create owner if doesn't exist
+        /* Create owner if doesn't exist */
         if( profile.getOwner() == null ){
             Owner owner = new Owner();
             owner.setProfile( profile );
@@ -110,7 +88,10 @@ public class AddressService {
     }
 
     private AddressOutputDto addressToDto(Address address ){
-        return (AddressOutputDto) Convert.objects( address, new AddressOutputDto());
+        AddressOutputDto dto = (AddressOutputDto) Convert.objects( address, new AddressOutputDto());
+        dto.fieldIds = address.getFieldIds();
+        dto.ownerId = address.getOwner().getId();
+        return dto;
     }
 
     private User getUserByName( String username ){
@@ -119,19 +100,4 @@ public class AddressService {
         throw new UsernameNotFoundException( username );
     }
 
-    private String getSortName( String sort ){
-        boolean sortExist = false;
-        for (Field f : AddressOutputDto.class.getDeclaredFields() ){
-            if (f.getName().equalsIgnoreCase( sort )){
-                sort = f.getName();
-                sortExist = true;
-                break;
-            }
-        }
-
-        if (!sortExist){
-            throw new SortNotSupportedException( sort );
-        }
-        return sort;
-    }
 }

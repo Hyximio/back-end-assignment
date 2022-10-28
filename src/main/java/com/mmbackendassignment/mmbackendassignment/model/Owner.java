@@ -1,6 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,9 +16,12 @@ public class Owner {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany
-    @JoinColumn(name = "address_id")
+    @OneToMany( mappedBy = "owner" )
     List<Address> addresses;
+
+    public Long getId() {
+        return id;
+    }
 
     public Profile getProfile() {
         return profile;
@@ -25,6 +29,17 @@ public class Owner {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public ArrayList<Long> getAddressIds() {
+
+        ArrayList<Long> addressIds = new ArrayList<>();
+
+        for( Address a : addresses ){
+            addressIds.add( a.getId() );
+        }
+
+        return addressIds;
     }
 
     public List<Address> getAddresses() {

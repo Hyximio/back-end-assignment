@@ -13,4 +13,12 @@ public class RecordNotFoundException extends RuntimeException {
         super(message);
     }
 
+    public RecordNotFoundException(String type, String value) {
+        super("Record " + type + " not found: " + value);
+    }
+
+    public RecordNotFoundException(String type, Long value) {
+        super("Record " + type + " id not found: " + value);
+    }
+
 }

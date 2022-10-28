@@ -1,5 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.dto;
 
+import java.util.ArrayList;
+
 public class AddressOutputDto {
 
     public long id;
@@ -10,4 +12,6 @@ public class AddressOutputDto {
     public String postalCode;
     public String country;
 
+    public ArrayList<Long> fieldIds;
+    public long ownerId;
 }

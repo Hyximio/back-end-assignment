@@ -25,6 +25,8 @@ public class Convert {
                 switch ( getModifier(f) ) {
                     case "public" -> {
                         System.out.println("Property is public");
+                        System.out.println( f.getName() );
+                        System.out.println( value );
                         setPublicValue( fieldsA, f, objB, value );
                     }
                     case "private" -> {

@@ -5,5 +5,6 @@ import com.mmbackendassignment.mmbackendassignment.model.Address;
 import java.util.List;
 
 public class OwnerDto {
-    public List<AddressInputDto> addresses;
+    public List<Long> addressIds;
+    public long profileId;
 }

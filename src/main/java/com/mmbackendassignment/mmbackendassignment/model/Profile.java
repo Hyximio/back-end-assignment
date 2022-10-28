@@ -20,10 +20,10 @@ public class Profile {
     private LocalDate dob;
 
     //    private Client client;
-    @OneToOne( mappedBy = "profile")
+    @OneToOne( mappedBy = "profile" )
     private Owner owner;
 
-    @OneToOne( mappedBy = "profile")
+    @OneToOne( mappedBy = "profile" )
     private User user;
 
     public Owner getOwner() {

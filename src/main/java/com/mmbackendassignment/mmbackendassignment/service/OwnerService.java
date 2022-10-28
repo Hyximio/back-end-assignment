@@ -1,7 +1,9 @@
 package com.mmbackendassignment.mmbackendassignment.service;
 
 import com.mmbackendassignment.mmbackendassignment.dto.OwnerDto;
+import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.exception.UsernameNotFoundException;
+import com.mmbackendassignment.mmbackendassignment.model.Address;
 import com.mmbackendassignment.mmbackendassignment.model.Owner;
 import com.mmbackendassignment.mmbackendassignment.model.Profile;
 import com.mmbackendassignment.mmbackendassignment.model.User;
@@ -23,26 +25,22 @@ public class OwnerService {
         this.userRepo = userRepo;
     }
 
-    public Object getOwner(String username ){
-        User user = getUserByName( username );
+    public Object getOwner( long id ){
+        Optional<Owner> op = repo.findById( id );
+        if (op.isPresent()){
+            Owner owner = op.get();
 
-        Profile profile = user.getProfile();
-
-        Owner owner = profile.getOwner();
-        if ( profile.getOwner() != null ){
-
+            return ownerToDto( owner );
         }
-
-        return owner;
+        throw new RecordNotFoundException();
     }
 
-    private User getUserByName(String username ){
-        Optional<User> op = userRepo.findById( username );
-        if (op.isPresent()) return op.get();
-        throw new UsernameNotFoundException( username );
-    }
+    private OwnerDto ownerToDto( Owner owner ){
+        OwnerDto dto = new OwnerDto();
 
-    private OwnerDto ownerToDto(Owner owner ){
-        return (OwnerDto) Convert.objects( owner, new OwnerDto() );
+        dto.profileId = owner.getProfile().getId();
+        dto.addressIds = owner.getAddressIds();
+
+        return dto;
     }
 }

@@ -1,6 +1,8 @@
 package com.mmbackendassignment.mmbackendassignment.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "addresses")
@@ -19,6 +21,14 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     Owner owner;
+
+    @OneToMany( mappedBy = "address" )
+//    @JoinColumn(name = "field_id")
+    List<Field> fields;
+
+    public long getId() {
+        return id;
+    }
 
     public String getStreet() {
         return street;
@@ -66,5 +76,31 @@ public class Address {
 
     public void setOwner(Owner owner) {
         this.owner = owner;
+    }
+
+    public List<Field> getFields() {
+        return fields;
+    }
+
+    public ArrayList<Long> getFieldIds() {
+
+        ArrayList<Long> fieldIds = new ArrayList<>();
+
+        for( Field f : fields ){
+            fieldIds.add( f.getId() );
+        }
+
+        return fieldIds;
+    }
+
+    public void addField( Field field ){
+        boolean exists = false;
+        for( Field f : this.fields){
+            if (f.getId() == field.getId() ){
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) this.fields.add( field );
     }
 }

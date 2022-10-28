@@ -1,6 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.service;
 
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
+import com.mmbackendassignment.mmbackendassignment.dto.ProfileOutputDto;
 import com.mmbackendassignment.mmbackendassignment.exception.UsernameNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Profile;
 import com.mmbackendassignment.mmbackendassignment.model.User;
@@ -31,7 +32,7 @@ public class ProfileService {
         return "Done";
     }
 
-    public ProfileInputDto getProfile( String username ){
+    public ProfileOutputDto getProfile( String username ){
         User user = getUserByName( username );
         return ProfileToDto( user.getProfile() );
     }
@@ -48,8 +49,19 @@ public class ProfileService {
         return "Done";
     }
 
-    private ProfileInputDto ProfileToDto( Profile profile ) {
-        return (ProfileInputDto) Convert.objects( profile, new ProfileInputDto() );
+    private ProfileOutputDto ProfileToDto(Profile profile ) {
+
+        System.out.println( profile.getOwner() );
+
+        ProfileOutputDto dto = (ProfileOutputDto) Convert.objects( profile, new ProfileOutputDto() );
+
+        System.out.println( dto.ownerId );
+        if( profile.getOwner() != null) {
+            dto.ownerId = profile.getOwner().getId();
+        }
+
+//        dto.clientId = profile.getClient().getId();
+        return dto;
     }
 
     private Profile dtoToProfile( ProfileInputDto dto ){

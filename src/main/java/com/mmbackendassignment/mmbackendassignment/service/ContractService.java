@@ -11,6 +11,7 @@ import com.mmbackendassignment.mmbackendassignment.repository.ClientRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.ContractRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.FieldRepository;
 import com.mmbackendassignment.mmbackendassignment.util.Convert;
+import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,14 +31,15 @@ public class ContractService {
     }
 
     public ContractOutputDto getContract(long id ){
-
-        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
+        Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
+//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
         System.out.println( contract.getEndDate() );
         return contractToDto( contract );
     }
 
     public String agreeClientContract( long id, boolean agree ){
-        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
+        Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
+//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
 
         contract.setClientAgreement( true );
         repo.save( contract );
@@ -45,7 +47,8 @@ public class ContractService {
     }
 
     public String agreeOwnerContract( long id, boolean agree ){
-        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
+        Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
+//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
 
         contract.setOwnerAgreement( true );
         repo.save( contract );
@@ -55,8 +58,10 @@ public class ContractService {
     public String createContract( long clientId, long fieldId, ContractInputDto dto ){
         Contract contract = dtoToContract( dto );
 
-        Client client = (Client)getRepoObjectById( clientRepo, clientId, "client" );
-        Field field = (Field)getRepoObjectById( fieldRepo, fieldId, "field" );
+        Client client = (Client) ServiceUtil.getRepoObjectById( clientRepo, clientId, "client" );
+//        Client client = (Client)getRepoObjectById( clientRepo, clientId, "client" );
+        Field field = (Field) ServiceUtil.getRepoObjectById( fieldRepo, fieldId, "field" );
+//        Field field = (Field)getRepoObjectById( fieldRepo, fieldId, "field" );
 
         contract.setClient( client );
         contract.setField( field );
@@ -67,13 +72,14 @@ public class ContractService {
     }
 
     public String deleteContract( long id ){
+        ServiceUtil.getRepoObjectById(repo, id, "contract");
         repo.deleteById( id );
         return "Deleted";
     }
 
     public String editContract( long id, ContractInputDto dto ){
-
-        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
+        Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
+//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
         contract = (Contract) Convert.objects( dto, contract );
         repo.save( contract );
 
@@ -96,12 +102,12 @@ public class ContractService {
         return contract;
     }
 
-    private Object getRepoObjectById( JpaRepository repo, long id, String name ){
-
-        Optional op = repo.findById( id );
-        if ( op.isEmpty() ){
-            throw new RecordNotFoundException( name, id );
-        }
-        return op.get();
-    }
+//    private Object getRepoObjectById( JpaRepository repo, long id, String name ){
+//
+//        Optional op = repo.findById( id );
+//        if ( op.isEmpty() ){
+//            throw new RecordNotFoundException( name, id );
+//        }
+//        return op.get();
+//    }
 }

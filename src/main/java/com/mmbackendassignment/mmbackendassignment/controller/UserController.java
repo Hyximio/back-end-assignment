@@ -3,6 +3,7 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.service.UserService;
 import com.mmbackendassignment.mmbackendassignment.util.BindingResultUtil;
+import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<String> createUser( @Valid @RequestBody AuthDto dto,
                                               BindingResult br){
-        BindingResultUtil.check( br );
+        Check.bindingResults( br );
         return ResponseEntity.ok().body( service.createUser(dto) );
     }
 
@@ -54,11 +55,12 @@ public class UserController {
         return ResponseEntity.ok().body( service.setEnabled( username, enabled ) );
     }
 
-//    @PostMapping("/{username}")
-//    public ResponseEntity<String> setUserSettings( @RequestBody UserInputDto dto ){
-//
-//        return ResponseEntity.ok().body( service.setUserSettings( dto ));
-//    }
+    @PostMapping("/{username}/password/{password}")
+    public ResponseEntity<String> setUserSettings( @PathVariable("username") String username,
+                                                   @PathVariable("password") String password){
+
+        return ResponseEntity.ok().body(service.setPassword(username, password));
+    }
 
     @DeleteMapping("/{username}/{role}")
     public ResponseEntity<String> removeRole( @PathVariable("username") String username,

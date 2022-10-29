@@ -1,6 +1,6 @@
 package com.mmbackendassignment.mmbackendassignment.exception;
 
-public class ContractWithOwnException  extends RuntimeException {
+public class ContractWithOwnException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public ContractWithOwnException() {

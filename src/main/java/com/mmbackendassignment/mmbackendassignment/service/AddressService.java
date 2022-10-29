@@ -4,16 +4,14 @@ import com.mmbackendassignment.mmbackendassignment.dto.AddressOutputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.AddressInputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.PageDto;
 import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
-import com.mmbackendassignment.mmbackendassignment.model.Address;
-import com.mmbackendassignment.mmbackendassignment.model.Owner;
-import com.mmbackendassignment.mmbackendassignment.model.Profile;
-import com.mmbackendassignment.mmbackendassignment.model.User;
+import com.mmbackendassignment.mmbackendassignment.model.*;
 import com.mmbackendassignment.mmbackendassignment.repository.AddressRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.OwnerRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.ProfileRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
 import com.mmbackendassignment.mmbackendassignment.util.Convert;
 import com.mmbackendassignment.mmbackendassignment.util.PagableUtil;
+import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -56,7 +54,8 @@ public class AddressService {
 
 
     public String createAddress(String username, AddressInputDto dto){
-        User user = getUserByName( username );
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "user");
+//        User user = getUserByName( username );
 
         Profile profile = user.getProfile();
 
@@ -80,6 +79,13 @@ public class AddressService {
     }
 
     public String editAddress( long id, AddressInputDto dto){
+
+        Address address = (Address) ServiceUtil.getRepoObjectById(repo, id, "address");
+        address = (Address) Convert.objects( dto, address );
+        repo.save( address );
+        return "Done";
+
+        /*
         Optional<Address> op = repo.findById( id );
 
         if ( op.isPresent() ){
@@ -89,6 +95,14 @@ public class AddressService {
         }else{
             throw new RecordNotFoundException( "address", id);
         }
+
+        */
+    }
+
+    public String deleteAddress( long id ){
+        ServiceUtil.getRepoObjectById(repo, id, "address");
+        repo.deleteById( id );
+        return "Deleted";
     }
 
     private Address dtoToAddress( AddressInputDto dto ){
@@ -102,10 +116,10 @@ public class AddressService {
         return dto;
     }
 
-    private User getUserByName( String username ){
-        Optional<User> op = userRepo.findById( username );
-        if (op.isPresent()) return op.get();
-        throw new RecordNotFoundException( "username", username );
-    }
+//    private User getUserByName( String username ){
+//        Optional<User> op = userRepo.findById( username );
+//        if (op.isPresent()) return op.get();
+//        throw new RecordNotFoundException( "username", username );
+//    }
 
 }

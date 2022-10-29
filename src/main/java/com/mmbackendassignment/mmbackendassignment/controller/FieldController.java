@@ -2,8 +2,12 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.FieldInputDto;
 import com.mmbackendassignment.mmbackendassignment.service.FieldService;
+import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/fields")
@@ -22,13 +26,18 @@ public class FieldController {
 
     @PostMapping("/{addressId}")
     public ResponseEntity<Object> createField(@PathVariable("addressId") long addressId,
-                                              @RequestBody FieldInputDto dto){
+                                              @Valid @RequestBody FieldInputDto dto,
+                                              BindingResult br){
+        Check.bindingResults( br );
         return ResponseEntity.ok( service.createField( addressId, dto ));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> editField(@PathVariable("id") long id,
-                                              @RequestBody FieldInputDto dto){
+                                            @Valid @RequestBody FieldInputDto dto,
+                                            BindingResult br){
+        Check.bindingResults( br );
+        Check.hasNullable( dto );
         return ResponseEntity.ok( service.editField( id, dto ));
     }
 

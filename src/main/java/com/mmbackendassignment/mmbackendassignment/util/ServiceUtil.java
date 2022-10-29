@@ -14,4 +14,12 @@ public class ServiceUtil {
         }
         return op.get();
     }
+
+    public static Object getRepoObjectById( JpaRepository repo, String id, String name ){
+        Optional op = repo.findById( id );
+        if ( op.isEmpty() ){
+            throw new RecordNotFoundException( name, id );
+        }
+        return op.get();
+    }
 }

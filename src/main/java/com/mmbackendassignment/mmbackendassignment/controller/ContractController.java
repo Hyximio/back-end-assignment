@@ -2,8 +2,12 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.ContractInputDto;
 import com.mmbackendassignment.mmbackendassignment.service.ContractService;
+import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/contracts")
@@ -23,15 +27,18 @@ public class ContractController {
     @PostMapping("/{clientId}/{fieldId}")
     public ResponseEntity<?> createContract(@PathVariable("clientId") long clientId,
                                             @PathVariable("fieldId") long fieldId,
-                                            @RequestBody ContractInputDto dto){
-
+                                            @Valid @RequestBody ContractInputDto dto,
+                                            BindingResult br){
+        Check.bindingResults( br );
+        Check.hasNullable( dto );
         return ResponseEntity.ok( service.createContract( clientId, fieldId, dto ));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> createContract(@PathVariable("id") long id,
-                                            @RequestBody ContractInputDto dto){
-
+                                            @Valid @RequestBody ContractInputDto dto,
+                                            BindingResult br){
+        Check.bindingResults( br );
         return ResponseEntity.ok( service.editContract( id, dto ));
     }
 

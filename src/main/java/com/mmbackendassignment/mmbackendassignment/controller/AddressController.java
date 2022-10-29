@@ -2,8 +2,12 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.AddressInputDto;
 import com.mmbackendassignment.mmbackendassignment.service.AddressService;
+import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/addresses")
@@ -20,20 +24,28 @@ public class AddressController {
                                            @RequestParam(defaultValue = "100") int size,
                                            @RequestParam(defaultValue = "city") String sort) {
 
-        return ResponseEntity.ok( service.getAddresses( page,size,sort ) );
+        return ResponseEntity.ok( service.getAddresses( page, size, sort ) );
     }
 
     @PostMapping("/{username}")
     public ResponseEntity<?> createAddress( @PathVariable("username") String username,
-                                            @RequestBody AddressInputDto dto){
-
+                                            @Valid @RequestBody AddressInputDto dto,
+                                            BindingResult br){
+        Check.bindingResults( br );
+        Check.hasNullable( dto );
         return ResponseEntity.ok( service.createAddress(username, dto) );
     }
 
-    @PutMapping("/{addressId}")
-    public ResponseEntity<?> editAddress( @PathVariable("addressId") long id,
-                                          @RequestBody AddressInputDto dto){
-
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editAddress( @PathVariable("id") long id,
+                                          @Valid @RequestBody AddressInputDto dto,
+                                          BindingResult br){
+        Check.bindingResults( br );
         return ResponseEntity.ok( service.editAddress(id, dto) );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAddress( @PathVariable("id") long id ){
+        return ResponseEntity.ok( service.deleteAddress( id ));
     }
 }

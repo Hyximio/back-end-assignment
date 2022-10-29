@@ -39,5 +39,11 @@ public class ExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(value = NullValueNotAllowedException.class)
+    public ResponseEntity<Object> exception(NullValueNotAllowedException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
 }
 

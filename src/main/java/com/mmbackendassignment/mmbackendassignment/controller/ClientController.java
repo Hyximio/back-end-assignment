@@ -18,8 +18,8 @@ public class ClientController {
         this.service = service;
     }
 
-    @GetMapping("/{clientId}")
-    public ResponseEntity<?> getOwner(@PathVariable("clientId") long id ){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOwner(@PathVariable("id") long id ){
         return ResponseEntity.ok( service.getClient( id ));
     }
 

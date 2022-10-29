@@ -4,12 +4,14 @@ import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileOutputDto;
 import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Client;
+import com.mmbackendassignment.mmbackendassignment.model.Owner;
 import com.mmbackendassignment.mmbackendassignment.model.Profile;
 import com.mmbackendassignment.mmbackendassignment.model.User;
 import com.mmbackendassignment.mmbackendassignment.repository.ClientRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.ProfileRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
 import com.mmbackendassignment.mmbackendassignment.util.Convert;
+import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,6 +30,19 @@ public class ProfileService {
     }
 
     public String editProfile(String username, ProfileInputDto dto ){
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+        long profileId = user.getProfile().getId();
+        Profile profile = (Profile) ServiceUtil.getRepoObjectById(repo, profileId, "profile");
+
+        profile = (Profile) Convert.objects(dto, profile );
+
+        /* Fix to also mirror the 'Character' value */
+        if( dto.gender != null )
+            profile.setGender( dto.gender );
+
+        repo.save( profile );
+
+        /*
         User user = getUserByName( username );
 
         Optional<Profile> op = repo.findById( user.getProfile().getId() );
@@ -35,24 +50,27 @@ public class ProfileService {
 
             Profile profile = (Profile) Convert.objects(dto, op.get() );
 
-            /* Fix to also mirror the 'Character' value */
+            // - Fix to also mirror the 'Character' value
             if( dto.gender != null )
                 profile.setGender( dto.gender );
 
             repo.save( profile );
 
         }
+        */
 
         return "Done";
     }
 
     public ProfileOutputDto getProfile( String username ){
-        User user = getUserByName( username );
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+//        User user = getUserByName( username );
         return ProfileToDto( user.getProfile() );
     }
 
     public String createProfile(String username, ProfileInputDto dto){
-        User user = getUserByName( username );
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+//        User user = getUserByName( username );
         Profile profile = dtoToProfile( dto );
 
         Client client = new Client();
@@ -85,9 +103,9 @@ public class ProfileService {
         return profile;
     }
 
-    private User getUserByName(String username ){
-        Optional<User> op = userRepo.findById( username );
-        if (op.isPresent()) return op.get();
-        throw new RecordNotFoundException( "username", username );
-    }
+//    private User getUserByName(String username ){
+//        Optional<User> op = userRepo.findById( username );
+//        if (op.isPresent()) return op.get();
+//        throw new RecordNotFoundException( "username", username );
+//    }
 }

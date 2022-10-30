@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AddressService {
@@ -53,9 +52,8 @@ public class AddressService {
     }
 
 
-    public String createAddress(String username, AddressInputDto dto){
+    public long createAddress(String username, AddressInputDto dto){
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "user");
-//        User user = getUserByName( username );
 
         Profile profile = user.getProfile();
 
@@ -73,9 +71,9 @@ public class AddressService {
         Address address = dtoToAddress( dto );
         address.setOwner( owner );
 
-        repo.save( address );
+        Address savedAddress = repo.save( address );
 
-        return "Done";
+        return savedAddress.getId();
     }
 
     public String editAddress( long id, AddressInputDto dto){
@@ -85,18 +83,6 @@ public class AddressService {
         repo.save( address );
         return "Done";
 
-        /*
-        Optional<Address> op = repo.findById( id );
-
-        if ( op.isPresent() ){
-            Address address = (Address) Convert.objects( dto, op.get() );
-            repo.save( address );
-            return "Done";
-        }else{
-            throw new RecordNotFoundException( "address", id);
-        }
-
-        */
     }
 
     public String deleteAddress( long id ){
@@ -115,11 +101,4 @@ public class AddressService {
         dto.ownerId = address.getOwner().getId();
         return dto;
     }
-
-//    private User getUserByName( String username ){
-//        Optional<User> op = userRepo.findById( username );
-//        if (op.isPresent()) return op.get();
-//        throw new RecordNotFoundException( "username", username );
-//    }
-
 }

@@ -32,14 +32,11 @@ public class ContractService {
 
     public ContractOutputDto getContract(long id ){
         Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
-//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
-        System.out.println( contract.getEndDate() );
         return contractToDto( contract );
     }
 
     public String agreeClientContract( long id, boolean agree ){
         Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
-//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
 
         contract.setClientAgreement( true );
         repo.save( contract );
@@ -48,27 +45,28 @@ public class ContractService {
 
     public String agreeOwnerContract( long id, boolean agree ){
         Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
-//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
 
         contract.setOwnerAgreement( true );
         repo.save( contract );
         return "Done";
     }
 
-    public String createContract( long clientId, long fieldId, ContractInputDto dto ){
+    public long createContract( long clientId, long fieldId, ContractInputDto dto ){
         Contract contract = dtoToContract( dto );
 
         Client client = (Client) ServiceUtil.getRepoObjectById( clientRepo, clientId, "client" );
-//        Client client = (Client)getRepoObjectById( clientRepo, clientId, "client" );
         Field field = (Field) ServiceUtil.getRepoObjectById( fieldRepo, fieldId, "field" );
-//        Field field = (Field)getRepoObjectById( fieldRepo, fieldId, "field" );
+
+        if( field.getAddress().getOwner().getProfile().getId() == client.getProfile().getId()){
+            throw new ContractWithOwnException();
+        }
 
         contract.setClient( client );
         contract.setField( field );
 
-        repo.save( contract );
+        Contract savedContract = repo.save( contract );
 
-        return "Contract created";
+        return savedContract.getId();
     }
 
     public String deleteContract( long id ){
@@ -79,7 +77,6 @@ public class ContractService {
 
     public String editContract( long id, ContractInputDto dto ){
         Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
-//        Contract contract = (Contract) getRepoObjectById( repo, id, "contract" );
         contract = (Contract) Convert.objects( dto, contract );
         repo.save( contract );
 
@@ -102,12 +99,4 @@ public class ContractService {
         return contract;
     }
 
-//    private Object getRepoObjectById( JpaRepository repo, long id, String name ){
-//
-//        Optional op = repo.findById( id );
-//        if ( op.isEmpty() ){
-//            throw new RecordNotFoundException( name, id );
-//        }
-//        return op.get();
-//    }
 }

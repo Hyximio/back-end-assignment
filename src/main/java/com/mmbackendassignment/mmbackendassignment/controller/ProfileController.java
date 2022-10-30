@@ -2,7 +2,6 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
 import com.mmbackendassignment.mmbackendassignment.service.ProfileService;
-import com.mmbackendassignment.mmbackendassignment.util.BindingResultUtil;
 import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,7 +20,7 @@ public class ProfileController {
     }
 
     @PostMapping("/{username}")
-    public ResponseEntity<String> createProfile(@PathVariable("username") String username,
+    public ResponseEntity<Long> createProfile(@PathVariable("username") String username,
                                                 @Valid @RequestBody ProfileInputDto dto,
                                                 BindingResult br){
         Check.bindingResults( br );
@@ -38,9 +37,8 @@ public class ProfileController {
     public ResponseEntity<?> editProfile( @PathVariable("username") String username,
                                           @Valid @RequestBody ProfileInputDto dto,
                                           BindingResult br){
-        BindingResultUtil.check( br );
+        Check.bindingResults( br );
         return ResponseEntity.ok( service.editProfile( username, dto) );
     }
-
 
 }

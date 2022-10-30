@@ -34,7 +34,6 @@ public class UserService {
 
     public UserOutputDto getUser( String username ){
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
-//        User user = getUserByName(username);
         return userToDto( user );
     }
 
@@ -80,7 +79,6 @@ public class UserService {
 
     public String addRole( String username, String role ){
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
-//        User user = getUserByName(username);
         if ( doesRoleExist( role ) ) {
             user.addRole( role );
             repo.save( user );
@@ -90,14 +88,13 @@ public class UserService {
 
     public String removeRole( String username, String role ) {
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
-//        User user = getUserByName(username);
         user.removeRole(role);
         repo.save(user);
         return "Done";
     }
 
     public String deleteUser( String username ){
-        // Only check if it exist
+        // Only check if it exists
         ServiceUtil.getRepoObjectById(repo, username, "username");
         repo.deleteById(username);
         return ("Deleted");
@@ -105,7 +102,6 @@ public class UserService {
 
     public String setEnabled( String username, boolean enabled ){
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
-//        User user = getUserByName(username);
         user.setEnabled( enabled );
         repo.save( user );
         return ("User '" + username + "' enabled set to '" + enabled + "'");
@@ -113,17 +109,10 @@ public class UserService {
 
     public String setPassword( String username, String password){
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
-//        User user = getUserByName( username );
         user.setPassword( password );
         repo.save( user );
         return "Done";
     }
-
-//    private User getUserByName( String username ){
-//        Optional<User> op = repo.findById( username );
-//        if (op.isPresent()) return op.get();
-//        throw new RecordNotFoundException( "username", username );
-//    }
 
     private UserOutputDto userToDto( User user ){
         UserOutputDto dto = new UserOutputDto(

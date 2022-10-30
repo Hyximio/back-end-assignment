@@ -1,6 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.AddressInputDto;
+import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
 import com.mmbackendassignment.mmbackendassignment.service.AddressService;
 import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,17 @@ public class AddressController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editAddress( @PathVariable("id") long id,
+    public ResponseEntity<?> editsAddress( @PathVariable("id") long id,
                                           @Valid @RequestBody AddressInputDto dto,
                                           BindingResult br){
+
+        System.out.println( dto.country );
+        System.out.println( "put address");
         Check.bindingResults( br );
+//        BindingResultUtil.check( br );
         return ResponseEntity.ok( service.editAddress(id, dto) );
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAddress( @PathVariable("id") long id ){

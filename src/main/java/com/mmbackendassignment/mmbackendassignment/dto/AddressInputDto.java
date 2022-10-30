@@ -1,22 +1,20 @@
 package com.mmbackendassignment.mmbackendassignment.dto;
 
 import org.springframework.lang.Nullable;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 public class AddressInputDto {
 
     @Nullable
-    @NotBlank
+    @Size(min = 1)
     public String street;
 
     @Nullable
     @Min(1)
-    public int number;
+    public Integer number;
 
     @Nullable
-    @NotBlank
+    @Size(min = 1)
     public String city;
 
     @Nullable
@@ -24,6 +22,6 @@ public class AddressInputDto {
     public String postalCode;
 
     @Nullable
-    @NotBlank
+    @Size(min = 1)
     public String country;
 }

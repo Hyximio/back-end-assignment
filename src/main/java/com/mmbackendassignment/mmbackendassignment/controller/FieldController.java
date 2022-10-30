@@ -24,11 +24,17 @@ public class FieldController {
         return ResponseEntity.ok( service.getField( id ));
     }
 
+    @GetMapping("/address/{addressId}")
+    public ResponseEntity<?> getFields(@PathVariable("addressId") long addressId){
+        return ResponseEntity.ok( service.getFields( addressId ) );
+    }
+
     @PostMapping("/{addressId}")
     public ResponseEntity<Object> createField(@PathVariable("addressId") long addressId,
                                               @Valid @RequestBody FieldInputDto dto,
                                               BindingResult br){
         Check.bindingResults( br );
+        Check.hasNullable( dto );
         return ResponseEntity.ok( service.createField( addressId, dto ));
     }
 
@@ -37,7 +43,6 @@ public class FieldController {
                                             @Valid @RequestBody FieldInputDto dto,
                                             BindingResult br){
         Check.bindingResults( br );
-        Check.hasNullable( dto );
         return ResponseEntity.ok( service.editField( id, dto ));
     }
 

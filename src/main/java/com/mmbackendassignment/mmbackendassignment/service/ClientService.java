@@ -1,17 +1,12 @@
 package com.mmbackendassignment.mmbackendassignment.service;
 
 import com.mmbackendassignment.mmbackendassignment.dto.ClientDto;
-import com.mmbackendassignment.mmbackendassignment.dto.OwnerDto;
-import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Client;
-import com.mmbackendassignment.mmbackendassignment.model.Owner;
-import com.mmbackendassignment.mmbackendassignment.model.User;
 import com.mmbackendassignment.mmbackendassignment.repository.ClientRepository;
-import com.mmbackendassignment.mmbackendassignment.repository.OwnerRepository;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+
 
 @Service
 public class ClientService {
@@ -25,13 +20,6 @@ public class ClientService {
         Client client = (Client) ServiceUtil.getRepoObjectById(repo, id, "client");
         return clientToDto( client );
 
-//        Optional<Client> op = repo.findById( id );
-//        if (op.isPresent()){
-//            Client client = op.get();
-//
-//            return clientToDto( client );
-//        }
-//        throw new RecordNotFoundException( "client", id );
     }
 
     private ClientDto clientToDto(Client client ){

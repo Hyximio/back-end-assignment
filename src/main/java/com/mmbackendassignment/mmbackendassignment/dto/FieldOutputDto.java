@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class FieldOutputDto {
 
+    public long id;
+
     public String description;
     public Float meters;
     public ArrayList<String> features;

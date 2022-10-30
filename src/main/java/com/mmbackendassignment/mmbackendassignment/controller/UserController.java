@@ -2,7 +2,6 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.service.UserService;
-import com.mmbackendassignment.mmbackendassignment.util.BindingResultUtil;
 import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

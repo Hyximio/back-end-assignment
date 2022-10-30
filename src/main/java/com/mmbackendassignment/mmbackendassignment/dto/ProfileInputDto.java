@@ -4,16 +4,16 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Date;
+
 
 public class ProfileInputDto {
 
     @Nullable
-    @NotBlank
+    @Size(min = 1)
     public String firstName;
 
     @Nullable
-    @Size(min=2, max=128)
+    @Size(min = 1)
     public String lastName;
 
     @Nullable

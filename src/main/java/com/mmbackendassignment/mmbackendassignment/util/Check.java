@@ -23,6 +23,7 @@ public class Check {
         }
     }
 
+
     public static void bindingResults( BindingResult br) {
 
         if (br.hasErrors()) {

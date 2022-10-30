@@ -42,13 +42,13 @@ public class ContractController {
         return ResponseEntity.ok( service.editContract( id, dto ));
     }
 
-    @PutMapping("/{id}/client")
+    @PutMapping("/client/{id}")
     public ResponseEntity<?> agreeClientContract(@PathVariable("id") long id,
                                                  @RequestParam( defaultValue = "false" ) boolean agree){
         return ResponseEntity.ok( service.agreeClientContract( id, agree ) );
     }
 
-    @PutMapping("/{id}/owner")
+    @PutMapping("/owner/{id}")
     public ResponseEntity<?> agreeOwnerContract(@PathVariable("id") long id,
                                                 @RequestParam( defaultValue = "false" ) boolean agree){
         return ResponseEntity.ok( service.agreeOwnerContract( id, agree ) );

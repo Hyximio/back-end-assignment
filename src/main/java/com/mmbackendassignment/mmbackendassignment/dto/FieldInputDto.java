@@ -4,12 +4,13 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 
 public class FieldInputDto {
 
     @Nullable
-    @NotBlank
+    @Size(min = 1)
     public String description;
 
     @Nullable
@@ -17,7 +18,7 @@ public class FieldInputDto {
     public Float meters;
 
     @Nullable
-    @NotBlank
+    @Size(min = 1, message = "features: give at least one feature")
     public ArrayList<String> features;
 
     @Nullable

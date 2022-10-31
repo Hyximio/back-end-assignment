@@ -45,5 +45,10 @@ public class ExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(value = UserIsDisabledException.class)
+    public ResponseEntity<Object> exception(UserIsDisabledException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
 }
 

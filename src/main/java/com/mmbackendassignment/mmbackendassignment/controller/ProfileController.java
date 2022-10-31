@@ -19,6 +19,11 @@ public class ProfileController {
         this.service = service;
     }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getProfile(@PathVariable("username") String username){
+        return ResponseEntity.ok( service.getProfile( username ) );
+    }
+
     @PostMapping("/{username}")
     public ResponseEntity<Long> createProfile(@PathVariable("username") String username,
                                                 @Valid @RequestBody ProfileInputDto dto,
@@ -26,11 +31,6 @@ public class ProfileController {
         Check.bindingResults( br );
         Check.hasNullable( dto );
         return ResponseEntity.ok( service.createProfile( username, dto) );
-    }
-
-    @GetMapping("/{username}")
-    public ResponseEntity<?> getProfile(@PathVariable("username") String username){
-        return ResponseEntity.ok( service.getProfile( username ) );
     }
 
     @PutMapping("/{username}")

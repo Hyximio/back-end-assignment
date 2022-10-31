@@ -1,10 +1,16 @@
 package com.mmbackendassignment.mmbackendassignment.service;
 
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
+import com.mmbackendassignment.mmbackendassignment.exception.BadRequestException;
 import com.mmbackendassignment.mmbackendassignment.model.User;
 import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
+import com.mmbackendassignment.mmbackendassignment.security.JwtService;
+import com.mmbackendassignment.mmbackendassignment.security.MyUserDetails;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,44 +21,41 @@ public class AuthService {
 
     private final UserRepository repo;
     private final PasswordEncoder encoder;
-//    private final AuthenticationManager authManager;
+    private final AuthenticationManager authManager;
+    private final JwtService jwtService;
 
-//    public AuthService(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager) {
+    public AuthService(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager, JwtService jwtService) {
+        this.repo = repo;
+        this.encoder = encoder;
+        this.authManager = authManager;
+        this.jwtService = jwtService;
+    }
+
+
+//    public AuthService(UserRepository repo, PasswordEncoder encoder) {
 //        this.repo = repo;
 //        this.encoder = encoder;
-//        this.authManager = authManager;
 //    }
 
 
-    public AuthService(UserRepository repo, PasswordEncoder encoder) {
-        this.repo = repo;
-        this.encoder = encoder;
-    }
 
-    public String signup(AuthDto dto ) {
-
-        // Check if username is already exist
-        Optional<User> existence = repo.findById( dto.username );
-
-        // If existence is empty the username is not in use and safe to add
-        if ( existence.isEmpty() ) {
-            User user = new User( dto.username, encoder.encode( dto.password ) );
-
-            repo.save(user);
-            return "Done";
-        } else {
-            return "Username is already in use";
-        }
-    }
-
-    public String signin( AuthDto dto ) {
+    public String signin(AuthDto dto ) {
 
         User user = (User)ServiceUtil.getRepoObjectById( repo, dto.username, "username");
 
         if ( encoder.matches( dto.password, user.getPassword() ) ) {
-            return "Sign in as " + dto.username;
+
+            MyUserDetails userDetails = new MyUserDetails( user );
+            String token = jwtService.generateToken( userDetails );
+
+            return "Bearer " + token;
+
+//            return ResponseEntity.ok()
+//                    .header( HttpHeaders.AUTHORIZATION, "Bearer " + token )
+//                    .body("Token generated");
+
         }
-        return "Password does not match";
+        throw new BadRequestException();
 
     }
 }

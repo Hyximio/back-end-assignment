@@ -27,12 +27,28 @@ public class UserService {
 
     private final UserRepository repo;
     private final RoleRepository roleRepo;
-//    private final PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
     UserService(UserRepository repo, RoleRepository roleRepo, PasswordEncoder encoder ){
         this.repo = repo;
         this.roleRepo = roleRepo;
-//        this.encoder = encoder;
+        this.encoder = encoder;
+    }
+
+    public String createUser(AuthDto dto ) {
+
+        // Check if username is already exist
+        Optional<User> existence = repo.findById( dto.username );
+
+        // If existence is empty the username is not in use and safe to add
+        if ( existence.isEmpty() ) {
+            User user = new User( dto.username, encoder.encode( dto.password ) );
+
+            repo.save(user);
+            return "Done";
+        } else {
+            return "Username is already in use";
+        }
     }
 
     public UserOutputDto getUser( String username ){

@@ -11,18 +11,6 @@ import java.util.ArrayList;
 
 public class PagableUtil {
 
-//    PageRequest pr = PagableUtil.createPageRequest(page, size, sort, AddressOutputDto.class );
-//    Page<Address> pageContent = repo.findAll(pr);
-//
-//    List<Object> contentList = page.getContent();
-//    ArrayList<Object> contentDto = new ArrayList<>();
-//
-//    for (Object a : contentList) {
-//        contentDto.add( this.addressToDto(a) );
-//    }
-//
-//    PagableUtil.createPageDto( pr, pageContent );
-
     public static PageDto createPageDto( ArrayList content, Page page ) {
 
         PageDto dto = new PageDto(

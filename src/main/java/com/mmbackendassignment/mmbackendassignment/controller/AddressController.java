@@ -28,6 +28,11 @@ public class AddressController {
         return ResponseEntity.ok( service.getAddresses( page, size, sort ) );
     }
 
+    @GetMapping("/{ownerId}")
+    public ResponseEntity<?> getOwnerAddresses( @PathVariable("ownerId") long ownerId) {
+        return ResponseEntity.ok( service.getAddressesByOwner( ownerId ) );
+    }
+
     @PostMapping("/{username}")
     public ResponseEntity<?> createAddress( @PathVariable("username") String username,
                                             @Valid @RequestBody AddressInputDto dto,
@@ -41,11 +46,7 @@ public class AddressController {
     public ResponseEntity<?> editsAddress( @PathVariable("id") long id,
                                           @Valid @RequestBody AddressInputDto dto,
                                           BindingResult br){
-
-        System.out.println( dto.country );
-        System.out.println( "put address");
         Check.bindingResults( br );
-//        BindingResultUtil.check( br );
         return ResponseEntity.ok( service.editAddress(id, dto) );
     }
 

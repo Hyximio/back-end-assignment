@@ -3,6 +3,7 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.service.AuthService;
 import com.mmbackendassignment.mmbackendassignment.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,14 +20,17 @@ public class AuthController {
         this.service = service;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> createUser(@RequestBody AuthDto dto) {
-        return ResponseEntity.ok( service.signup(dto) );
-    }
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> createUser(@RequestBody AuthDto dto) {
+//        return ResponseEntity.ok( service.signup(dto) );
+//    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> createAuthToken(@RequestBody AuthDto dto) {
-        return ResponseEntity.ok( service.signin(dto) );
+
+        return ResponseEntity.ok()
+                    .header( HttpHeaders.AUTHORIZATION, service.signin(dto) )
+                    .body("Token generated");
     }
 
 

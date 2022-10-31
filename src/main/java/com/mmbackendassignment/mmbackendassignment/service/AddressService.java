@@ -9,11 +9,10 @@ import com.mmbackendassignment.mmbackendassignment.repository.AddressRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.OwnerRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.ProfileRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
-import com.mmbackendassignment.mmbackendassignment.util.Convert;
-import com.mmbackendassignment.mmbackendassignment.util.PagableUtil;
-import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
+import com.mmbackendassignment.mmbackendassignment.util.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,9 +50,25 @@ public class AddressService {
 
     }
 
+    public List<AddressOutputDto> getAddressesByOwner( long ownerId ){
+        Owner owner = (Owner) ServiceUtil.getRepoObjectById(ownerRepo, ownerId, "owner");
+
+//        Authentication auth =
+        if ( JwtHandler.isEntityFromSameUser( owner ) ){
+            System.out.println("is owner");
+        };
+        List<Address> addresses = owner.getAddresses();
+        ArrayList<AddressOutputDto> dtos = new ArrayList<>();
+
+        for (Address a : addresses) {
+            dtos.add( this.addressToDto(a) );
+        }
+
+        return dtos;
+    }
 
     public long createAddress(String username, AddressInputDto dto){
-        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "user");
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
 
         Profile profile = user.getProfile();
 
@@ -65,6 +80,9 @@ public class AddressService {
 
             profile.setOwner( owner );
             profileRepo.save( profile );
+
+            user.addRole("OWNER");
+            userRepo.save(user);
         }
 
         Owner owner = profile.getOwner();
@@ -86,8 +104,15 @@ public class AddressService {
     }
 
     public String deleteAddress( long id ){
-        ServiceUtil.getRepoObjectById(repo, id, "address");
+        Address address = (Address) ServiceUtil.getRepoObjectById(repo, id, "address");
         repo.deleteById( id );
+
+        // Remove OWNER role if no addresses are found
+        String username = address.getOwner().getProfile().getUser().getUsername();
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+        user.removeRole( "OWNER" );
+        userRepo.save( user );
+
         return "Deleted";
     }
 

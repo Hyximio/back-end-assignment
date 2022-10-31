@@ -4,6 +4,9 @@ import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.service.UserService;
 import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +36,20 @@ public class UserController {
         return ResponseEntity.ok().body( service.getUser( username ) );
     }
 
-    @PostMapping("")
-    public ResponseEntity<String> createUser( @Valid @RequestBody AuthDto dto,
-                                              BindingResult br){
-        Check.bindingResults( br );
-        return ResponseEntity.ok().body( service.createUser(dto) );
-    }
+//    @PostMapping("")
+//    public ResponseEntity<String> createUser( @Valid @RequestBody AuthDto dto,
+//                                              BindingResult br){
+//
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if( auth.getPrincipal() instanceof UserDetails){
+//            System.out.println( ((UserDetails) auth.getPrincipal()).getUsername() );
+//        }
+//        System.out.println( "Is a stranger" );
+//
+//
+//        Check.bindingResults( br );
+//        return ResponseEntity.ok().body( service.createUser(dto) );
+//    }
 
     @PutMapping("/{username}/role/{role}")
     public ResponseEntity<String> addRole( @PathVariable("username") String username,

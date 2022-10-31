@@ -14,6 +14,7 @@ import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -26,10 +27,12 @@ public class UserService {
 
     private final UserRepository repo;
     private final RoleRepository roleRepo;
+//    private final PasswordEncoder encoder;
 
-    UserService(UserRepository repo, RoleRepository roleRepo ){
+    UserService(UserRepository repo, RoleRepository roleRepo, PasswordEncoder encoder ){
         this.repo = repo;
         this.roleRepo = roleRepo;
+//        this.encoder = encoder;
     }
 
     public UserOutputDto getUser( String username ){
@@ -62,20 +65,21 @@ public class UserService {
         return userContent;
     }
 
-    public String createUser( AuthDto dto ){
-        // Check if username is already exist
-        Optional<User> existence = repo.findById( dto.username );
-
-        // If existence is empty the username is not in use and safe to add
-        if ( existence.isEmpty() ) {
-            User user = new User( dto.username, dto.password );
-
-            repo.save(user);
-            return "Done";
-        } else {
-            return "Username is already in use";
-        }
-    }
+//    public String createUser( AuthDto dto ){
+//        // Check if username is already exist
+//        Optional<User> existence = repo.findById( dto.username );
+//
+//        // If existence is empty the username is not in use and safe to add
+//        if ( existence.isEmpty() ) {
+//            User user = new User( dto.username, dto.password );
+////            User user = new User( dto.username, encoder.encode( dto.password ) );
+//
+//            repo.save(user);
+//            return "Done";
+//        } else {
+//            return "Username is already in use";
+//        }
+//    }
 
     public String addRole( String username, String role ){
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");

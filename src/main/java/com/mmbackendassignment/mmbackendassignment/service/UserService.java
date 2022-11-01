@@ -3,13 +3,16 @@ package com.mmbackendassignment.mmbackendassignment.service;
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.dto.PageDto;
 import com.mmbackendassignment.mmbackendassignment.dto.UserOutputDto;
+import com.mmbackendassignment.mmbackendassignment.exception.CantDeleteWithDependencyException;
 import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
-import com.mmbackendassignment.mmbackendassignment.exception.RoleNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.exception.SortNotSupportedException;
 import com.mmbackendassignment.mmbackendassignment.model.Role;
 import com.mmbackendassignment.mmbackendassignment.model.User;
+import com.mmbackendassignment.mmbackendassignment.repository.ProfileRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.RoleRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
+import com.mmbackendassignment.mmbackendassignment.util.Check;
+import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +30,13 @@ public class UserService {
 
     private final UserRepository repo;
     private final RoleRepository roleRepo;
+    private final ProfileRepository profileRepo;
     private final PasswordEncoder encoder;
 
-    UserService(UserRepository repo, RoleRepository roleRepo, PasswordEncoder encoder ){
+    UserService(UserRepository repo, RoleRepository roleRepo, ProfileRepository profileRepo, PasswordEncoder encoder ){
         this.repo = repo;
         this.roleRepo = roleRepo;
+        this.profileRepo = profileRepo;
         this.encoder = encoder;
     }
 
@@ -53,6 +58,10 @@ public class UserService {
 
     public UserOutputDto getUser( String username ){
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
+        System.out.println( "Is admin: " + JwtHandler.isAdmin() );
+        System.out.println( JwtHandler.isEntityFromSameUser( user ));
+
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser( user );
         return userToDto( user );
     }
 
@@ -81,22 +90,6 @@ public class UserService {
         return userContent;
     }
 
-//    public String createUser( AuthDto dto ){
-//        // Check if username is already exist
-//        Optional<User> existence = repo.findById( dto.username );
-//
-//        // If existence is empty the username is not in use and safe to add
-//        if ( existence.isEmpty() ) {
-//            User user = new User( dto.username, dto.password );
-////            User user = new User( dto.username, encoder.encode( dto.password ) );
-//
-//            repo.save(user);
-//            return "Done";
-//        } else {
-//            return "Username is already in use";
-//        }
-//    }
-
     public String addRole( String username, String role ){
         User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
         if ( doesRoleExist( role ) ) {
@@ -114,10 +107,13 @@ public class UserService {
     }
 
     public String deleteUser( String username ){
-        // Only check if it exists
-        ServiceUtil.getRepoObjectById(repo, username, "username");
+        User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser( user );
+
+        Check.hasDependency( user.getProfile(), "profile");
         repo.deleteById(username);
-        return ("Deleted");
+
+        return "Deleted";
     }
 
     public String setEnabled( String username, boolean enabled ){
@@ -127,9 +123,10 @@ public class UserService {
         return ("User '" + username + "' enabled set to '" + enabled + "'");
     }
 
-    public String setPassword( String username, String password){
-        User user = (User) ServiceUtil.getRepoObjectById(repo, username, "username");
-        user.setPassword( password );
+    public String setPassword( AuthDto dto ){
+        User user = (User) ServiceUtil.getRepoObjectById(repo, dto.username, "username");
+        JwtHandler.abortIfEntityIsNotFromSameUser(user);
+        user.setPassword( dto.password );
         repo.save( user );
         return "Done";
     }
@@ -160,7 +157,7 @@ public class UserService {
             }
         }
 
-        throw new RoleNotFoundException( role );
+        throw new RecordNotFoundException( "role", role );
     }
 
     private String getSortName( String sort ){

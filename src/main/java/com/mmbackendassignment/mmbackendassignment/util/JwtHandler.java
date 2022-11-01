@@ -1,8 +1,11 @@
 package com.mmbackendassignment.mmbackendassignment.util;
 
+import com.mmbackendassignment.mmbackendassignment.exception.ContractWithOwnException;
+import com.mmbackendassignment.mmbackendassignment.exception.EntityNotFromJwtUserException;
 import com.mmbackendassignment.mmbackendassignment.exception.UserIsDisabledException;
 import com.mmbackendassignment.mmbackendassignment.model.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,8 +16,12 @@ public class JwtHandler {
     public static boolean isAdmin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if( auth.getPrincipal() instanceof UserDetails userDetails ) {
+
             Collection authorities = userDetails.getAuthorities();
-            return authorities.contains("ADMIN");
+            for( Object a : authorities){
+                if(a.toString().equals( "ADMIN" ) ) return true;
+            }
+            return false;
         }
         return false;
     }
@@ -29,13 +36,23 @@ public class JwtHandler {
         return false;
     }
 
+    public static void abortIfEntityIsNotFromSameUser( Object entity ){
+        if (!JwtHandler.isEntityFromSameUser(entity)){
+            throw new EntityNotFromJwtUserException();
+        }
+    }
     public static boolean isEntityFromSameUser( Object entity ){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         if( auth.getPrincipal() instanceof UserDetails ) {
             UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
             String username = "";
+
+            if (entity instanceof User user) {
+                username = user.getUsername();
+            }
 
             if (entity instanceof Profile profile) {
                 username = profile.getUser().getUsername();
@@ -57,7 +74,7 @@ public class JwtHandler {
                 username = field.getAddress().getOwner().getProfile().getUser().getUsername();
             }
 
-            return username.equals(userDetails.getUsername());
+            return username.equals( userDetails.getUsername() );
         }
 
         return false;

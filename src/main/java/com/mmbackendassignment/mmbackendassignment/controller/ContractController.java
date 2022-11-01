@@ -19,9 +19,19 @@ public class ContractController {
         this.service = service;
     }
 
+    @GetMapping("/owner/{id}")
+    public ResponseEntity<?> getOwnerContract(@PathVariable("id") long id){
+        return ResponseEntity.ok( service.getContract( id, "OWNER" ));
+    }
+
+    @GetMapping("/client/{id}")
+    public ResponseEntity<?> getClientContract(@PathVariable("id") long id){
+        return ResponseEntity.ok( service.getContract( id, "CLIENT" ));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getContract(@PathVariable("id") long id){
-        return ResponseEntity.ok( service.getContract( id ));
+        return ResponseEntity.ok( service.getContract( id, "ADMIN" ));
     }
 
     @PostMapping("/{clientId}/{fieldId}")
@@ -35,7 +45,7 @@ public class ContractController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> createContract(@PathVariable("id") long id,
+    public ResponseEntity<?> editContract(@PathVariable("id") long id,
                                             @Valid @RequestBody ContractInputDto dto,
                                             BindingResult br){
         Check.bindingResults( br );

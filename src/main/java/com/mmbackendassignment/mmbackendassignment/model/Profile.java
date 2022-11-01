@@ -1,5 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.model;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
@@ -18,6 +20,10 @@ public class Profile {
     private String phoneNumber;
     private Character gender;
     private LocalDate dob;
+
+    @Nullable
+    @Lob
+    private byte[] profilePicture;
 
     @OneToOne
     private Client client;
@@ -110,5 +116,11 @@ public class Profile {
         return client;
     }
 
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
 
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 }

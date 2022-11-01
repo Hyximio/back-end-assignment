@@ -4,6 +4,7 @@ import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.security.MyUserDetails;
 import com.mmbackendassignment.mmbackendassignment.service.UserService;
 import com.mmbackendassignment.mmbackendassignment.util.Check;
+import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,16 +30,6 @@ public class UserController {
                                        @RequestParam(defaultValue = "100") int size,
                                        @RequestParam(defaultValue = "username") String sort){
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println( auth.getPrincipal().getClass() );
-
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String output = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        System.out.println("Hero");
-//        System.out.println(output);
-        System.out.println( userDetails.getUsername() );
-
         return ResponseEntity.ok().body( service.getUsers( page, size, sort ) );
     }
 
@@ -51,13 +42,6 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<String> createUser( @Valid @RequestBody AuthDto dto,
                                               BindingResult br){
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if( auth.getPrincipal() instanceof UserDetails){
-            System.out.println( ((UserDetails) auth.getPrincipal()).getUsername() );
-        }
-        System.out.println( "Is a stranger" );
-
 
         Check.bindingResults( br );
         return ResponseEntity.ok().body( service.createUser(dto) );
@@ -77,11 +61,10 @@ public class UserController {
         return ResponseEntity.ok().body( service.setEnabled( username, enabled ) );
     }
 
-    @PutMapping("/password/{username}/{password}")
-    public ResponseEntity<String> setUserSettings( @PathVariable("username") String username,
-                                                   @PathVariable("password") String password){
+    @PutMapping("/password")
+    public ResponseEntity<String> setUserSettings( @Valid @RequestBody AuthDto dto) {
 
-        return ResponseEntity.ok().body(service.setPassword(username, password));
+        return ResponseEntity.ok().body(service.setPassword(dto));
     }
 
     @DeleteMapping("/{username}/{role}")

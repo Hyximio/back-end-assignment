@@ -10,7 +10,7 @@ public class AuthDto {
     public String username;
 
     @Pattern( regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
-            message = "Password is not safe enough")
+            message = "password: not safe enough")
     public String password;
 
 }

@@ -15,12 +15,6 @@ public class ExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = RoleNotFoundException.class)
-    public ResponseEntity<Object> exception(RoleNotFoundException exception) {
-
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(value = BadRequestException.class)
     public ResponseEntity<Object> exception(BadRequestException exception) {
 
@@ -47,6 +41,30 @@ public class ExceptionController {
 
     @ExceptionHandler(value = UserIsDisabledException.class)
     public ResponseEntity<Object> exception(UserIsDisabledException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(value = CantDeleteWithDependencyException.class)
+    public ResponseEntity<Object> exception(CantDeleteWithDependencyException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.IM_USED);
+    }
+
+    @ExceptionHandler(value = RecordAlreadyExistException.class)
+    public ResponseEntity<Object> exception(RecordAlreadyExistException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.IM_USED);
+    }
+
+    @ExceptionHandler(value = EntityNotFromJwtUserException.class)
+    public ResponseEntity<Object> exception(EntityNotFromJwtUserException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = FileExtensionNotSupportedException.class)
+    public ResponseEntity<Object> exception(FileExtensionNotSupportedException exception) {
 
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }

@@ -9,7 +9,7 @@ import java.util.List;
 public class Contract {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDate startDate;
@@ -22,7 +22,7 @@ public class Contract {
     @JoinColumn( name = "field_id" )
     private Field field;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn( name = "client_id" )
     private Client client;
 

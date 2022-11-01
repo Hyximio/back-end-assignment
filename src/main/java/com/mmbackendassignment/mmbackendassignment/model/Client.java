@@ -1,20 +1,22 @@
 package com.mmbackendassignment.mmbackendassignment.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table( name = "clients" )
 public class Client {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne( mappedBy = "client" )
+    @OneToOne( mappedBy = "client", cascade = CascadeType.ALL)
     private Profile profile;
 
-    @OneToOne
-    private Contract contract;
+    @OneToMany( mappedBy = "client")
+    private List<Contract> contracts;
 
 
     public Long getId() {
@@ -25,14 +27,25 @@ public class Client {
         this.profile = profile;
     }
 
-    public Contract getContract() {
-        return contract;
+    public List<Contract> getContracts() {
+        return contracts;
     }
 
-    public void setContract(Contract contract) {
-        this.contract = contract;
+    public void setContracts(List<Contract> contracts) {
+        this.contracts = contracts;
     }
 
+    public ArrayList<Long> getContractIds(){
+
+        ArrayList<Long> contractIds = new ArrayList<>();
+
+        for( Contract c : contracts ){
+            contractIds.add( c.getId() );
+        }
+
+        return contractIds;
+
+    }
     public Profile getProfile() {
         return profile;
     }

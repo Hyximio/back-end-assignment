@@ -14,7 +14,7 @@ public class FieldInputDto {
     public String description;
 
     @Nullable
-    @Min(0)
+    @Min(1)
     public Float meters;
 
     @Nullable

@@ -9,7 +9,7 @@ import java.util.List;
 public class Field {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String description;

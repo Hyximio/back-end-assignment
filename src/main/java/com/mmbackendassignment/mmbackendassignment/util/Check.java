@@ -1,6 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.util;
 
 import com.mmbackendassignment.mmbackendassignment.exception.BindingResultException;
+import com.mmbackendassignment.mmbackendassignment.exception.CantDeleteWithDependencyException;
 import com.mmbackendassignment.mmbackendassignment.exception.NullValueNotAllowedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -37,5 +38,15 @@ public class Check {
         }
     }
 
+    public static void hasDependency( Object dependency, String dependencyName ){
+        if( dependency != null ) {
+            throw new CantDeleteWithDependencyException( dependencyName );
+        }
+    }
 
+    public static void hasDependency( boolean isDependent, String dependencyName ){
+        if( isDependent ) {
+            throw new CantDeleteWithDependencyException( dependencyName );
+        }
+    }
 }

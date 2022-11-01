@@ -20,18 +20,12 @@ public class AuthController {
         this.service = service;
     }
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<?> createUser(@RequestBody AuthDto dto) {
-//        return ResponseEntity.ok( service.signup(dto) );
-//    }
-
-    @PostMapping("/signin")
+    @PostMapping
     public ResponseEntity<?> createAuthToken(@RequestBody AuthDto dto) {
 
+        System.out.println( "Sign in");
         return ResponseEntity.ok()
-                    .header( HttpHeaders.AUTHORIZATION, service.signin(dto) )
+                    .header( HttpHeaders.AUTHORIZATION, service.signIn(dto) )
                     .body("Token generated");
     }
-
-
 }

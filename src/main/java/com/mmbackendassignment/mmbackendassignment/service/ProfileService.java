@@ -2,15 +2,29 @@ package com.mmbackendassignment.mmbackendassignment.service;
 
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileOutputDto;
+import com.mmbackendassignment.mmbackendassignment.dto.ProfilePictureDto;
+import com.mmbackendassignment.mmbackendassignment.exception.FileExtensionNotSupportedException;
+import com.mmbackendassignment.mmbackendassignment.exception.RecordAlreadyExistException;
+import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Client;
 import com.mmbackendassignment.mmbackendassignment.model.Profile;
 import com.mmbackendassignment.mmbackendassignment.model.User;
 import com.mmbackendassignment.mmbackendassignment.repository.ClientRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.ProfileRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
+import com.mmbackendassignment.mmbackendassignment.util.Check;
 import com.mmbackendassignment.mmbackendassignment.util.Convert;
+import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -27,7 +41,10 @@ public class ProfileService {
     }
 
     public String editProfile(String username, ProfileInputDto dto ){
+
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(user);
+
         long profileId = user.getProfile().getId();
         Profile profile = (Profile) ServiceUtil.getRepoObjectById(repo, profileId, "profile");
 
@@ -39,21 +56,93 @@ public class ProfileService {
 
     public ProfileOutputDto getProfile( String username ){
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
-        return ProfileToDto( user.getProfile() );
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(user);
+
+        if( user.getProfile() != null){
+            return ProfileToDto( user.getProfile() );
+        }else{
+            throw new RecordNotFoundException("profile", username);
+        }
     }
 
     public long createProfile(String username, ProfileInputDto dto){
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(user);
+
+        if( user.getProfile() != null ){
+            throw new RecordAlreadyExistException("profile");
+        }
+
         Profile profile = dtoToProfile( dto );
 
         Client client = new Client();
+        client.setProfile(profile);
         clientRepo.save( client );
 
         profile.setUser( user );
         profile.setClient( client );
+
         Profile savedProfile = repo.save( profile );
 
         return savedProfile.getId();
+    }
+
+    public String deleteProfile( String username ){
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(user);
+
+        if ( user.getProfile() != null ) {
+
+            // TODO check if client has contracts
+//            if ( user.getProfile().getClient().getContract() )
+
+            Check.hasDependency( user.getProfile().getClient(), "client" );
+            Check.hasDependency( user.getProfile().getOwner(), "owner" );
+            repo.deleteById(user.getProfile().getId());
+        }
+
+        throw new RecordNotFoundException( "profile", username + ".profile");
+    }
+
+    public String saveProfilePicture( String username, MultipartFile file ) throws IOException {
+
+        /* Check if file has valid extension */
+        List<String> allowedExtensions = Arrays.asList("JPG", "JPEG");
+
+        String[] fileNameParts = file.getOriginalFilename().split("\\.");
+        String extension = fileNameParts[ fileNameParts.length-1 ];
+        if( allowedExtensions.contains( extension )){
+            throw new FileExtensionNotSupportedException( extension );
+        }
+
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+        if ( user.getProfile() != null ) {
+
+            System.out.println(Arrays.toString(file.getBytes()).length());
+            Profile profile = user.getProfile();
+            profile.setProfilePicture( file.getBytes() );
+            repo.save( profile );
+            return "Picture is placed";
+        }
+
+        throw new RecordNotFoundException( "profile", username + ".profile");
+    }
+
+    public Object getProfilePicture( String username ){
+        User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
+        if ( user.getProfile() != null ) {
+
+            Profile profile = user.getProfile();
+            if ( profile.getProfilePicture() == null ){
+                throw new RecordNotFoundException( "profile picture", username + ".profile");
+            }
+
+            ProfilePictureDto dto = new ProfilePictureDto();
+            dto.profilePicture = Base64.getEncoder().encodeToString( profile.getProfilePicture() );
+            return dto;
+        }
+
+        throw new RecordNotFoundException( "profile", username + ".profile");
     }
 
     private ProfileOutputDto ProfileToDto(Profile profile ) {

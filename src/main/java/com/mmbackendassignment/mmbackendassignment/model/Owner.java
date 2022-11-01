@@ -9,7 +9,7 @@ import java.util.List;
 public class Owner {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne( mappedBy = "owner" )
@@ -41,6 +41,13 @@ public class Owner {
         return addressIds;
     }
 
+    public void deleteAddressById( long id ){
+        for( Address a : this.addresses) {
+            if (a.getId() == id) {
+                this.addresses.remove(id);
+            }
+        }
+    }
     public List<Address> getAddresses() {
         return addresses;
     }

@@ -6,7 +6,9 @@ import com.mmbackendassignment.mmbackendassignment.model.Address;
 import com.mmbackendassignment.mmbackendassignment.model.Field;
 import com.mmbackendassignment.mmbackendassignment.repository.AddressRepository;
 import com.mmbackendassignment.mmbackendassignment.repository.FieldRepository;
+import com.mmbackendassignment.mmbackendassignment.util.Check;
 import com.mmbackendassignment.mmbackendassignment.util.Convert;
+import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +49,8 @@ public class FieldService {
     public Object createField( long addressId, FieldInputDto dto ){
 
         Address address = (Address) ServiceUtil.getRepoObjectById(addressRepo, addressId, "address");
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(address);
+
         Field field = dtoToField( dto );
         field.setAddress( address );
 
@@ -61,6 +65,8 @@ public class FieldService {
     public String editField( long id, FieldInputDto dto ){
 
         Field field = (Field) ServiceUtil.getRepoObjectById(repo, id, "field");
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(field);
+
         field = (Field) Convert.objects(dto, field );
         repo.save( field );
 
@@ -69,8 +75,11 @@ public class FieldService {
     }
 
     public String deleteField( long fieldId ){
-        System.out.println("Try to delete" + fieldId);
-        ServiceUtil.getRepoObjectById(repo, fieldId, "field");
+        Field field = (Field)ServiceUtil.getRepoObjectById(repo, fieldId, "field");
+
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(field);
+        Check.hasDependency( field.getContracts().size() != 0, "contract");
+
         repo.deleteById( fieldId );
         return "Deleted";
     }

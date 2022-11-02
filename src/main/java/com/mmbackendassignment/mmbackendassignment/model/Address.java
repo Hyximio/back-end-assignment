@@ -23,8 +23,11 @@ public class Address {
     Owner owner;
 
     @OneToMany( mappedBy = "address" )
-//    @JoinColumn(name = "field_id")
     List<Field> fields;
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public long getId() {
         return id;
@@ -85,6 +88,7 @@ public class Address {
     public ArrayList<Long> getFieldIds() {
 
         ArrayList<Long> fieldIds = new ArrayList<>();
+        if( fields == null ) return fieldIds;
 
         for( Field f : fields ){
             fieldIds.add( f.getId() );
@@ -102,5 +106,9 @@ public class Address {
             }
         }
         if (!exists) this.fields.add( field );
+    }
+
+    public void setFields(List<Field> fields) {
+        this.fields = fields;
     }
 }

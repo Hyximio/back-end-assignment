@@ -1,6 +1,7 @@
 package com.mmbackendassignment.mmbackendassignment.util;
 
-import com.mmbackendassignment.mmbackendassignment.model.User;
+import com.mmbackendassignment.mmbackendassignment.exception.EntityNotFromJwtUserException;
+import com.mmbackendassignment.mmbackendassignment.model.*;
 import com.mmbackendassignment.mmbackendassignment.security.JwtService;
 import com.mmbackendassignment.mmbackendassignment.security.MyUserDetails;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,31 +35,73 @@ class JwtHandlerTest {
     @MockBean
     private JwtService jwtService;
 
-    UserDetails ud;
+//    UserDetails ud;
+//
+//    @BeforeEach
+//    public void setUp() {
+//        User user = new User();
+//        user.setUsername("admin");
+//        user.addRole("ADMIN");
+//        // UserDetails ud = new MyUserDetails( user );
+//        this.ud = new MyUserDetails( user );
+//    }
 
-    @BeforeEach
-    public void setUp() {
-        User user = new User();
-        user.setUsername("admin");
-        user.addRole("ADMIN");
-        UserDetails ud = (UserDetails) new MyUserDetails( user );
+    @Test
+    @WithMockUser( username="admin", authorities="ADMIN")
+    void checkIfUserIsAdmin(){
+
+        boolean isAdmin = JwtHandler.isAdmin();
+        assertTrue( isAdmin );
     }
 
     @Test
-    @WithMockUser( username="admin", roles="ADMIN")
-    void checkIfUserIsAdmin(){
+    @WithMockUser( username="user", authorities="Client")
+    void checkIfUserIsNotAdmin(){
 
-        // arrange
-        Authentication auth = Mockito.mock( Authentication.class );
-        SecurityContext securityContext = Mockito.mock( SecurityContext.class );
-
-        Mockito.when( securityContext.getAuthentication() ).thenReturn( auth );
-        Mockito.when( auth.getPrincipal() ).thenReturn( ud );
-
-        // act
         boolean isAdmin = JwtHandler.isAdmin();
-
-        // assert
-        assertTrue( isAdmin );
+        assertFalse( isAdmin );
     }
+
+    @Test
+    @WithMockUser( username="Mick", authorities="Client")
+    void checkIfEntityIsFromSameUser(){
+
+        User user = new User( "Mick", "@");
+        Profile profile = new Profile();
+        Owner owner = new Owner();
+        Address address = new Address();
+        Field field = new Field();
+        Client client = new Client();
+
+        field.setAddress( address );
+        address.setOwner( owner );
+        owner.setProfile( profile );
+        profile.setUser( user );
+        client.setProfile( profile );
+
+        assertTrue( JwtHandler.isEntityFromSameUser( user ));
+        assertTrue( JwtHandler.isEntityFromSameUser( profile ));
+        assertTrue( JwtHandler.isEntityFromSameUser( client ));
+        assertTrue( JwtHandler.isEntityFromSameUser( owner ));
+        assertTrue( JwtHandler.isEntityFromSameUser( address ));
+        assertTrue( JwtHandler.isEntityFromSameUser( field ));
+
+        User userGuest = new User( "Guest", "@");
+        profile.setUser( userGuest );
+
+        assertFalse( JwtHandler.isEntityFromSameUser( userGuest ));
+        assertFalse( JwtHandler.isEntityFromSameUser( profile ));
+        assertFalse( JwtHandler.isEntityFromSameUser( client ));
+        assertFalse( JwtHandler.isEntityFromSameUser( owner ));
+        assertFalse( JwtHandler.isEntityFromSameUser( address ));
+        assertFalse( JwtHandler.isEntityFromSameUser( field ));
+    }
+
+    @Test
+    @WithMockUser( username="Mick", authorities="Client")
+    void abortIfEntityIsNotFromSameUser(){
+        User user = new User( "Guest", "@");
+        assertThrows( EntityNotFromJwtUserException.class, () -> JwtHandler.abortIfEntityIsNotFromSameUser( user ) );
+    }
+
 }

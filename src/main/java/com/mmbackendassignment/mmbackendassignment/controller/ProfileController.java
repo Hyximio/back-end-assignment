@@ -1,7 +1,6 @@
 package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
-import com.mmbackendassignment.mmbackendassignment.profilePicture.FileUploadResponse;
 import com.mmbackendassignment.mmbackendassignment.service.ProfileService;
 import com.mmbackendassignment.mmbackendassignment.util.Check;
 import org.springframework.http.ResponseEntity;

@@ -25,6 +25,7 @@ public class Field {
     @OneToMany( mappedBy = "field")
     List<Contract> contracts;
 
+    public void setId( long id ){ this.id = id; }
 
     public long getId() {
         return id;
@@ -90,8 +91,10 @@ public class Field {
 
         ArrayList<Long> contractIds = new ArrayList<>();
 
-        for( Contract c : contracts ){
-            contractIds.add( c.getId() );
+        if ( contracts != null) {
+            for (Contract c : contracts) {
+                contractIds.add(c.getId());
+            }
         }
 
         return contractIds;

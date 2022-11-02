@@ -17,7 +17,7 @@ public class OwnerService {
         this.repo = repo;
     }
 
-    public Object getOwner( long id ){
+    public OwnerDto getOwner( long id ){
         Owner owner = (Owner) ServiceUtil.getRepoObjectById(repo, id, "owner");
         if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(owner);
         return ownerToDto( owner );

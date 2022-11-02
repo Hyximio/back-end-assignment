@@ -10,13 +10,17 @@ public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @OneToOne( mappedBy = "owner" )
     private Profile profile;
 
     @OneToMany( mappedBy = "owner" )
     List<Address> addresses;
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
@@ -48,7 +52,12 @@ public class Owner {
             }
         }
     }
+
     public List<Address> getAddresses() {
         return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 }

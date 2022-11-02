@@ -30,9 +30,10 @@ public class Check {
         if (br.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             for (FieldError fe : br.getFieldErrors()) {
-                sb.append(fe.getField() + ": ");
-                sb.append(fe.getDefaultMessage());
-                sb.append("\n");
+                sb.append(fe.getField())
+                  .append(": ")
+                  .append(fe.getDefaultMessage())
+                  .append("\n");
             }
             throw new BindingResultException(sb.toString());
         }
@@ -44,6 +45,7 @@ public class Check {
         }
     }
 
+    /* isDependent parameter should be populated with a statement */
     public static void hasDependency( boolean isDependent, String dependencyName ){
         if( isDependent ) {
             throw new CantDeleteWithDependencyException( dependencyName );

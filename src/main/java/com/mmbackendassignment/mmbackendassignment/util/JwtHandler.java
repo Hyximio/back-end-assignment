@@ -19,21 +19,21 @@ public class JwtHandler {
 
             Collection authorities = userDetails.getAuthorities();
             for( Object a : authorities){
-                if(a.toString().equals( "ADMIN" ) ) return true;
+                if( a.toString().equals( "ADMIN" ) ) return true;
             }
         }
         return false;
     }
 
-    public static boolean isEnabled(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if( auth.getPrincipal() instanceof UserDetails userDetails ){
-            if ( userDetails.isEnabled() ){
-                throw new UserIsDisabledException();
-            };
-        }
-        return false;
-    }
+//    public static boolean isEnabled(){
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if( auth.getPrincipal() instanceof UserDetails userDetails ){
+//            if ( userDetails.isEnabled() ){
+//                throw new UserIsDisabledException();
+//            };
+//        }
+//        return false;
+//    }
 
     public static void abortIfEntityIsNotFromSameUser( Object entity ){
         if (!JwtHandler.isEntityFromSameUser(entity)){

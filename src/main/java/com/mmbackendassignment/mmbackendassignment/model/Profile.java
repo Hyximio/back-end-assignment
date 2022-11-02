@@ -36,6 +36,7 @@ public class Profile {
     @JoinColumn(name = "user_id")
     private User user;
 
+
     public Owner getOwner() {
         return owner;
     }

@@ -58,8 +58,4 @@ public class SqlCreateDropFix {
         }
     }
 
-//    @PostConstruct
-//    public void addAdminUser(){
-//
-//    }
 }

@@ -131,7 +131,7 @@ public class AddressService {
         return (Address) Convert.objects( dto, new Address());
     }
 
-    private AddressOutputDto addressToDto(Address address ){
+    private AddressOutputDto addressToDto( Address address ){
         AddressOutputDto dto = (AddressOutputDto) Convert.objects( address, new AddressOutputDto());
         dto.fieldIds = address.getFieldIds();
         dto.ownerId = address.getOwner().getId();

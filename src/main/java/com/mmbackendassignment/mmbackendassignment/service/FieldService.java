@@ -27,12 +27,8 @@ public class FieldService {
     }
 
     public FieldOutputDto getField( long id ){
-
         Field field = (Field) ServiceUtil.getRepoObjectById(repo, id, "field");
-
-        System.out.println( "found in repo ");
         return fieldToDto( field );
-
     }
 
     public ArrayList<FieldOutputDto> getFields( long addressId ){
@@ -46,7 +42,7 @@ public class FieldService {
         return fieldDtos;
     }
 
-    public Object createField( long addressId, FieldInputDto dto ){
+    public long createField( long addressId, FieldInputDto dto ){
 
         Address address = (Address) ServiceUtil.getRepoObjectById(addressRepo, addressId, "address");
         if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(address);

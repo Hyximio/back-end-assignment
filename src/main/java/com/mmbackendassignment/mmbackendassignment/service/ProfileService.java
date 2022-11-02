@@ -3,6 +3,7 @@ package com.mmbackendassignment.mmbackendassignment.service;
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileInputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.ProfileOutputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.ProfilePictureDto;
+import com.mmbackendassignment.mmbackendassignment.exception.CantDeleteWithDependencyException;
 import com.mmbackendassignment.mmbackendassignment.exception.FileExtensionNotSupportedException;
 import com.mmbackendassignment.mmbackendassignment.exception.RecordAlreadyExistException;
 import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
@@ -93,8 +94,9 @@ public class ProfileService {
 
         if ( user.getProfile() != null ) {
 
-            // TODO check if client has contracts
-//            if ( user.getProfile().getClient().getContract() )
+            if ( user.getProfile().getClient().getContracts().size() != 0 ){
+                throw new CantDeleteWithDependencyException("contracts");
+            }
 
             Check.hasDependency( user.getProfile().getClient(), "client" );
             Check.hasDependency( user.getProfile().getOwner(), "owner" );
@@ -118,7 +120,6 @@ public class ProfileService {
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
         if ( user.getProfile() != null ) {
 
-            System.out.println(Arrays.toString(file.getBytes()).length());
             Profile profile = user.getProfile();
             profile.setProfilePicture( file.getBytes() );
             repo.save( profile );

@@ -21,7 +21,6 @@ public class JwtHandler {
             for( Object a : authorities){
                 if(a.toString().equals( "ADMIN" ) ) return true;
             }
-            return false;
         }
         return false;
     }

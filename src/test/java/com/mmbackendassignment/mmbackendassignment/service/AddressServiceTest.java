@@ -13,7 +13,6 @@ import com.mmbackendassignment.mmbackendassignment.repository.UserRepository;
 import com.mmbackendassignment.mmbackendassignment.security.JwtService;
 import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.PagableUtil;
-import org.assertj.core.internal.Iterables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -25,16 +24,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-//import org.springframework.security.core.userdetails.User;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -112,8 +109,10 @@ class AddressServiceTest {
 
         user = new User("Mick", "@!");
         Profile profile = new Profile();
+        profile.setUser( user );
         user.setProfile( profile );
 
+        owner1.setProfile( profile );
 
         List<Address> owner2addresses = new ArrayList<>();
         owner2addresses.add(address2);
@@ -208,8 +207,8 @@ class AddressServiceTest {
     }
 
     @Test
-    @WithMockUser( username="admin", authorities="ADMIN")
-    void editAddress() {
+    @WithMockUser( username="Mick", authorities="CLIENT")
+    void editAddressByOwnerUser() {
 
         AddressInputDto inputDto = new AddressInputDto();
         inputDto.city = "Amsterdam";
@@ -227,6 +226,17 @@ class AddressServiceTest {
         assertEquals( capturedAddress.getStreet(), "Graslaan");
         assertEquals( capturedAddress.getNumber(), 43);
         assertEquals( capturedAddress.getCountry(), "NL");
+    }
+
+    @Test
+    @WithMockUser( username="admin", authorities="ADMIN")
+    void editAddressByAdminShouldNotBeAllowed() {
+
+        AddressInputDto inputDto = new AddressInputDto();
+
+        when( repo.findById( 1L )).thenReturn( Optional.of( address1 ));
+
+        assertThrows(EntityNotFromJwtUserException.class, () -> service.editAddress( 1L, inputDto ));
     }
 
     @Test

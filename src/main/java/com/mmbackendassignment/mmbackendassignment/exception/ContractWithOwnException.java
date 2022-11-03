@@ -4,6 +4,6 @@ public class ContractWithOwnException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public ContractWithOwnException() {
-        super("Cannot create contract with same client & owner");
+        super("Cannot create contract between same client & owner");
     }
 }

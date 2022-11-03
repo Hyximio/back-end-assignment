@@ -50,7 +50,6 @@ public class AddressService {
 
     public List<AddressOutputDto> getAddressesByOwner( long ownerId ){
         Owner owner = (Owner) ServiceUtil.getRepoObjectById(ownerRepo, ownerId, "owner");
-
         if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser( owner );
 
         List<Address> addresses = owner.getAddresses();
@@ -93,7 +92,7 @@ public class AddressService {
 
     public String editAddress( long id, AddressInputDto dto){
         Address address = (Address) ServiceUtil.getRepoObjectById(repo, id, "address");
-        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser( address );
+        JwtHandler.abortIfEntityIsNotFromSameUser( address );
 
         address = (Address) Convert.objects( dto, address );
         repo.save( address );

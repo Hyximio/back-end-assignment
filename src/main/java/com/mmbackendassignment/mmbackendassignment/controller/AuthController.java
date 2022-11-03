@@ -2,7 +2,6 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
 import com.mmbackendassignment.mmbackendassignment.service.AuthService;
-import com.mmbackendassignment.mmbackendassignment.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,6 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<?> createAuthToken(@RequestBody AuthDto dto) {
 
-        System.out.println( "Sign in");
         return ResponseEntity.ok()
                     .header( HttpHeaders.AUTHORIZATION, service.signIn(dto) )
                     .body("Token generated");

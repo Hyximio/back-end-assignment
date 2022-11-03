@@ -7,10 +7,9 @@ import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 public class ClientService {
+
     private final ClientRepository repo;
 
     public ClientService(ClientRepository repo) {
@@ -22,7 +21,6 @@ public class ClientService {
         if( !JwtHandler.isAdmin() ) JwtHandler.abortIfEntityIsNotFromSameUser( client );
 
         return clientToDto( client );
-
     }
 
     private ClientDto clientToDto(Client client ){

@@ -1,7 +1,10 @@
 package com.mmbackendassignment.mmbackendassignment.dto;
 
 import org.springframework.lang.Nullable;
-import javax.validation.constraints.*;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class AddressInputDto {
 
@@ -18,7 +21,7 @@ public class AddressInputDto {
     public String city;
 
     @Nullable
-    @Pattern( regexp = "^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)[A-Za-z]{2}$", message = "postalCode: Not valid" )
+    @Pattern( regexp = "^[1-9][0-9]{3} ?(?!sa|sd|ss|SA|SD|SS)[A-Za-z]{2}$", message = "Not valid" )
     public String postalCode;
 
     @Nullable

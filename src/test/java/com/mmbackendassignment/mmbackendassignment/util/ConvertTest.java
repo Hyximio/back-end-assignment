@@ -1,14 +1,10 @@
 package com.mmbackendassignment.mmbackendassignment.util;
 
-import com.mmbackendassignment.mmbackendassignment.dto.FieldInputDto;
-import com.mmbackendassignment.mmbackendassignment.dto.FieldOutputDto;
-import com.mmbackendassignment.mmbackendassignment.model.Field;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConvertTest {
 

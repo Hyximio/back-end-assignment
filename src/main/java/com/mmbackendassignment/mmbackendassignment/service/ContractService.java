@@ -3,8 +3,6 @@ package com.mmbackendassignment.mmbackendassignment.service;
 import com.mmbackendassignment.mmbackendassignment.dto.ContractInputDto;
 import com.mmbackendassignment.mmbackendassignment.dto.ContractOutputDto;
 import com.mmbackendassignment.mmbackendassignment.exception.ContractWithOwnException;
-import com.mmbackendassignment.mmbackendassignment.exception.EntityNotFromJwtUserException;
-import com.mmbackendassignment.mmbackendassignment.exception.RecordNotFoundException;
 import com.mmbackendassignment.mmbackendassignment.model.Client;
 import com.mmbackendassignment.mmbackendassignment.model.Contract;
 import com.mmbackendassignment.mmbackendassignment.model.Field;
@@ -14,10 +12,7 @@ import com.mmbackendassignment.mmbackendassignment.repository.FieldRepository;
 import com.mmbackendassignment.mmbackendassignment.util.Convert;
 import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ContractService {
@@ -87,19 +82,15 @@ public class ContractService {
 
     public String deleteContract( long id ){
         Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
+        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser( contract.getClient() );
 
-        if (!JwtHandler.isAdmin()) {
-            if ( !JwtHandler.isEntityFromSameUser( contract.getField() ) || !JwtHandler.isEntityFromSameUser( contract.getClient() )){
-                throw new EntityNotFromJwtUserException();
-            };
-        }
         repo.deleteById( id );
         return "Deleted";
     }
 
     public String editContract( long id, ContractInputDto dto ){
         Contract contract = (Contract) ServiceUtil.getRepoObjectById(repo, id, "contract");
-        if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(contract.getClient());
+        JwtHandler.abortIfEntityIsNotFromSameUser(contract.getClient());
 
         contract = (Contract) Convert.objects( dto, contract );
         repo.save( contract );

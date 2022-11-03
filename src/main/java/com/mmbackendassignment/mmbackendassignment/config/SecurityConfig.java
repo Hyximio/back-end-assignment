@@ -56,21 +56,18 @@ public class SecurityConfig {
                 .httpBasic().disable() //Disables basic auth
                 .authorizeRequests()
 
-                // AUTH
+                // AUTH SIGN-IN SIGN-UP
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers("/auth").permitAll()
 
                 // USER
                 .antMatchers(HttpMethod.GET,"/users").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.POST, "/users").permitAll() // create user
+                .antMatchers(HttpMethod.GET,"/users/**").hasAnyAuthority("CLIENT", "OWNER", "ADMIN")
                 .antMatchers(HttpMethod.PUT, "/users/password").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.PUT, "/users/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("ADMIN")
+                .antMatchers("/users/**").hasAuthority("ADMIN")
 
                 // PROFILE
-                .antMatchers(HttpMethod.GET, "/profiles/**").hasAnyAuthority("CLIENT", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/profiles/**").hasAnyAuthority("CLIENT", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/profiles/**").hasAnyAuthority("CLIENT", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/profiles/**").hasAnyAuthority("CLIENT", "ADMIN")
+                .antMatchers("/profiles/**").hasAnyAuthority("CLIENT", "OWNER", "ADMIN")
 
                 // CLIENT
                 .antMatchers(HttpMethod.GET,"/clients/**").hasAnyAuthority("CLIENT", "ADMIN")
@@ -79,23 +76,21 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,"/owners/**").hasAnyAuthority("OWNER", "ADMIN")
 
                 // ADDRESS
-                .antMatchers(HttpMethod.GET,"/addresses").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.POST,"/addresses/**").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.PUT,"/addresses/**").hasAuthority("OWNER")
-                .antMatchers(HttpMethod.DELETE,"/addresses/**").hasAuthority("OWNER")
+                .antMatchers(HttpMethod.GET,"/addresses").hasAnyAuthority("CLIENT", "OWNER", "ADMIN")
+                .antMatchers(HttpMethod.POST,"/addresses/**").hasAnyAuthority("CLIENT", "OWNER", "ADMIN")
+                .antMatchers("/addresses/**").hasAnyAuthority("OWNER", "ADMIN")
 
                 // FIELD
-                .antMatchers(HttpMethod.GET,"/fields/**").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.POST,"/fields/**").hasAnyAuthority("OWNER")
-                .antMatchers(HttpMethod.PUT,"/fields/**").hasAuthority("OWNER")
-                .antMatchers(HttpMethod.DELETE,"/fields/**").hasAnyAuthority("OWNER", "ADMIN")
+                .antMatchers(HttpMethod.GET,"/fields/**").hasAnyAuthority("CLIENT", "OWNER", "ADMIN")
+                .antMatchers("/fields/**").hasAnyAuthority("OWNER", "ADMIN")
 
                 // CONTRACT
-                .antMatchers(HttpMethod.GET,"/contracts/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/contracts/**").hasAnyAuthority("CLIENT")
-                .antMatchers(HttpMethod.PUT,"/contracts/client/**").hasAuthority("CLIENT")
-                .antMatchers(HttpMethod.PUT,"/contracts/owner/**").hasAuthority("OWNER")
-                .antMatchers(HttpMethod.DELETE,"/contracts/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/contracts/client/**").hasAnyAuthority("CLIENT")
+                .antMatchers(HttpMethod.GET,"/contracts/owner/**").hasAnyAuthority("OWNER")
+                .antMatchers(HttpMethod.GET,"/contracts/**").hasAnyAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT,"/contracts/client/**").hasAnyAuthority("CLIENT")
+                .antMatchers(HttpMethod.PUT,"/contracts/owner/**").hasAnyAuthority("OWNER")
+                .antMatchers("/contracts/**").hasAnyAuthority("CLIENT")
 
                 .and()
                 .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class)

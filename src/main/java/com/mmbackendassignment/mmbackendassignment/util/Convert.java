@@ -28,10 +28,7 @@ public class Convert {
                     case "private" -> {
                         setPrivateValue( f, objB, value );
                     }
-                    case "protected" -> System.out.println("Property is protected");
-                    default -> System.out.println("Property has no modifier");
                 }
-                break;
             }
         }
 

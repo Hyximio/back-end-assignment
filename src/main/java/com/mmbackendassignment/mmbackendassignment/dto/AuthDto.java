@@ -6,11 +6,12 @@ import javax.validation.constraints.Pattern;
 
 public class AuthDto {
 
-    @Length(min=4, max=128)
+    @Pattern( regexp = "^[A-Za-z\\d._-]+", message = "only alphabet characters, digits and (._-) allowed ")
+    @Length(min=4, max=40)
     public String username;
 
     @Pattern( regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
-            message = "password: not safe enough")
+            message = "not safe enough (need char, capital and digit with min length of 8)")
     public String password;
 
 }

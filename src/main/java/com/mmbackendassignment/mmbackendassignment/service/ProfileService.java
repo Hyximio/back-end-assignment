@@ -18,14 +18,12 @@ import com.mmbackendassignment.mmbackendassignment.util.Convert;
 import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
@@ -42,7 +40,6 @@ public class ProfileService {
     }
 
     public String editProfile(String username, ProfileInputDto dto ){
-
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
         if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(user);
 
@@ -97,10 +94,12 @@ public class ProfileService {
             if ( user.getProfile().getClient().getContracts().size() != 0 ){
                 throw new CantDeleteWithDependencyException("contracts");
             }
-
-            Check.hasDependency( user.getProfile().getClient(), "client" );
             Check.hasDependency( user.getProfile().getOwner(), "owner" );
-            repo.deleteById(user.getProfile().getId());
+
+
+//            repo.deleteById(user.getProfile().getId());
+            clientRepo.deleteById( user.getProfile().getClient().getId() );
+            return "Deleted";
         }
 
         throw new RecordNotFoundException( "profile", username + ".profile");
@@ -118,32 +117,37 @@ public class ProfileService {
         }
 
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
-        if ( user.getProfile() != null ) {
+        JwtHandler.abortIfEntityIsNotFromSameUser(user);
 
-            Profile profile = user.getProfile();
-            profile.setProfilePicture( file.getBytes() );
-            repo.save( profile );
-            return "Picture is placed";
+        if ( user.getProfile() == null ) {
+            throw new RecordNotFoundException("profile", username + ".profile");
         }
 
-        throw new RecordNotFoundException( "profile", username + ".profile");
+        Profile profile = user.getProfile();
+        profile.setProfilePicture( file.getBytes() );
+
+        repo.save( profile );
+
+        return "Picture is uploaded";
     }
 
     public Object getProfilePicture( String username ){
         User user = (User) ServiceUtil.getRepoObjectById(userRepo, username, "username");
-        if ( user.getProfile() != null ) {
+        JwtHandler.abortIfEntityIsNotFromSameUser(user);
 
-            Profile profile = user.getProfile();
-            if ( profile.getProfilePicture() == null ){
-                throw new RecordNotFoundException( "profile picture", username + ".profile");
-            }
-
-            ProfilePictureDto dto = new ProfilePictureDto();
-            dto.profilePicture = Base64.getEncoder().encodeToString( profile.getProfilePicture() );
-            return dto;
+        if ( user.getProfile() == null ) {
+            throw new RecordNotFoundException("profile", username + ".profile");
         }
 
-        throw new RecordNotFoundException( "profile", username + ".profile");
+        Profile profile = user.getProfile();
+        if ( profile.getProfilePicture() == null ){
+            throw new RecordNotFoundException( "profile picture", username + ".profile");
+        }
+
+        ProfilePictureDto dto = new ProfilePictureDto();
+        dto.profilePicture = Base64.getEncoder().encodeToString( profile.getProfilePicture() );
+
+        return dto;
     }
 
     private ProfileOutputDto ProfileToDto(Profile profile ) {

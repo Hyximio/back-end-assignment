@@ -25,7 +25,7 @@ public class UserController {
         this.service = service;
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<?> getUsers( @RequestParam(defaultValue = "0") int page,
                                        @RequestParam(defaultValue = "100") int size,
                                        @RequestParam(defaultValue = "username") String sort){
@@ -39,7 +39,7 @@ public class UserController {
         return ResponseEntity.ok().body( service.getUser( username ) );
     }
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<String> createUser( @Valid @RequestBody AuthDto dto,
                                               BindingResult br){
         Check.bindingResults( br );

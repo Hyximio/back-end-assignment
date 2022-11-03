@@ -2,10 +2,11 @@ package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mmbackendassignment.mmbackendassignment.dto.*;
+import com.mmbackendassignment.mmbackendassignment.dto.AddressInputDto;
+import com.mmbackendassignment.mmbackendassignment.dto.AddressOutputDto;
+import com.mmbackendassignment.mmbackendassignment.dto.PageDto;
 import com.mmbackendassignment.mmbackendassignment.security.JwtService;
 import com.mmbackendassignment.mmbackendassignment.service.AddressService;
-import com.mmbackendassignment.mmbackendassignment.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +23,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

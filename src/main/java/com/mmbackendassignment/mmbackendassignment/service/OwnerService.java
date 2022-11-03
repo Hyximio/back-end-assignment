@@ -7,7 +7,6 @@ import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import com.mmbackendassignment.mmbackendassignment.util.ServiceUtil;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class OwnerService {
 
@@ -20,8 +19,8 @@ public class OwnerService {
     public OwnerDto getOwner( long id ){
         Owner owner = (Owner) ServiceUtil.getRepoObjectById(repo, id, "owner");
         if (!JwtHandler.isAdmin()) JwtHandler.abortIfEntityIsNotFromSameUser(owner);
-        return ownerToDto( owner );
 
+        return ownerToDto( owner );
     }
 
     private OwnerDto ownerToDto( Owner owner ){

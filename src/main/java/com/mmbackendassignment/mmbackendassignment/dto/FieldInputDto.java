@@ -3,7 +3,6 @@ package com.mmbackendassignment.mmbackendassignment.dto;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public class FieldInputDto {
     public Float meters;
 
     @Nullable
-    @Size(min = 1, message = "features: give at least one feature")
+    @Size(min = 1, message = "give at least one feature")
     public ArrayList<String> features;
 
     @Nullable

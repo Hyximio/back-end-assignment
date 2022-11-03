@@ -31,7 +31,7 @@ public class PagableUtil {
         return PageRequest.of(page, size, Sort.by(sort));
     }
 
-    private static String getSortName( String sort, Class dto ){
+    public static String getSortName( String sort, Class dto ){
         boolean sortExist = false;
         for (Field f : dto.getDeclaredFields() ){
             if (f.getName().equalsIgnoreCase( sort )){

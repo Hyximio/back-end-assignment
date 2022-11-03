@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PageDto {
 
-    public ArrayList<Object> content = new ArrayList<>();
+    public ArrayList content = new ArrayList<>();
     public long amount;
     public long currentPage;
     public long totalPages;

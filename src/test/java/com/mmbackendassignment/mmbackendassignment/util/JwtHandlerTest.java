@@ -35,16 +35,6 @@ class JwtHandlerTest {
     @MockBean
     private JwtService jwtService;
 
-//    UserDetails ud;
-//
-//    @BeforeEach
-//    public void setUp() {
-//        User user = new User();
-//        user.setUsername("admin");
-//        user.addRole("ADMIN");
-//        // UserDetails ud = new MyUserDetails( user );
-//        this.ud = new MyUserDetails( user );
-//    }
 
     @Test
     @WithMockUser( username="admin", authorities="ADMIN")

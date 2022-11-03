@@ -98,6 +98,12 @@ public class Address {
     }
 
     public void addField( Field field ){
+
+        if( this.fields == null ){
+            this.fields = new ArrayList<>();
+            this.fields.add( field );
+        }
+
         boolean exists = false;
         for( Field f : this.fields){
             if (f.getId() == field.getId() ){

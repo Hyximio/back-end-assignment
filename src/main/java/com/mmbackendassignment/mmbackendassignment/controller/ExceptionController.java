@@ -42,7 +42,7 @@ public class ExceptionController {
     @ExceptionHandler(value = UserIsDisabledException.class)
     public ResponseEntity<Object> exception(UserIsDisabledException exception) {
 
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = CantDeleteWithDependencyException.class)

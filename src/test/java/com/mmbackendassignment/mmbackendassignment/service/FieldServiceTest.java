@@ -85,7 +85,7 @@ class FieldServiceTest {
     }
 
     @Test
-    void getFields() {
+    void getAllFields() {
 
         when( addressRepo.findById(1L) ).thenReturn( Optional.ofNullable( address1 ) );
 

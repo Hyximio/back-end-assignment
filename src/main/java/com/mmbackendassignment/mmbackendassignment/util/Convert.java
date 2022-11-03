@@ -21,21 +21,17 @@ public class Convert {
                     System.out.println(e);
                 }
 
-                // Assign value if property is public
                 switch ( getModifier(f) ) {
                     case "public" -> {
-//                        System.out.println("Property is public");
                         setPublicValue( fieldsA, f, objB, value );
                     }
                     case "private" -> {
-//                        System.out.println("Property is private");
-//                        System.out.println( f.getName() );
-//                        System.out.println( value );
-                        setPrivateValue(f, objB, value);
+                        setPrivateValue( f, objB, value );
                     }
                     case "protected" -> System.out.println("Property is protected");
                     default -> System.out.println("Property has no modifier");
                 }
+                break;
             }
         }
 

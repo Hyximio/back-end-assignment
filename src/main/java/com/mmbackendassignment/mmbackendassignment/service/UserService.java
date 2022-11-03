@@ -50,7 +50,7 @@ public class UserService {
             User user = new User( dto.username, encoder.encode( dto.password ) );
 
             repo.save(user);
-            return "Done";
+            return "New user created";
         } else {
             return "Username is already in use";
         }

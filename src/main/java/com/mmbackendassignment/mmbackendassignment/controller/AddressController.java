@@ -20,7 +20,7 @@ public class AddressController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<?> getAddresses( @RequestParam(defaultValue = "0") int page,
                                            @RequestParam(defaultValue = "100") int size,
                                            @RequestParam(defaultValue = "city") String sort) {

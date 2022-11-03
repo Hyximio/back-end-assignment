@@ -42,7 +42,6 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<String> createUser( @Valid @RequestBody AuthDto dto,
                                               BindingResult br){
-
         Check.bindingResults( br );
         return ResponseEntity.ok().body( service.createUser(dto) );
     }
@@ -62,8 +61,9 @@ public class UserController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<String> setUserSettings( @Valid @RequestBody AuthDto dto) {
-
+    public ResponseEntity<String> setPassword( @Valid @RequestBody AuthDto dto,
+                                                   BindingResult br) {
+        Check.bindingResults( br );
         return ResponseEntity.ok().body(service.setPassword(dto));
     }
 

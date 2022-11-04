@@ -1,15 +1,9 @@
 package com.mmbackendassignment.mmbackendassignment.controller;
 
 import com.mmbackendassignment.mmbackendassignment.dto.AuthDto;
-import com.mmbackendassignment.mmbackendassignment.security.MyUserDetails;
 import com.mmbackendassignment.mmbackendassignment.service.UserService;
 import com.mmbackendassignment.mmbackendassignment.util.Check;
-import com.mmbackendassignment.mmbackendassignment.util.JwtHandler;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,11 +20,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getUsers( @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<?> getUsers( @RequestParam(defaultValue = "1") int page,
                                        @RequestParam(defaultValue = "100") int size,
                                        @RequestParam(defaultValue = "username") String sort){
 
-        return ResponseEntity.ok().body( service.getUsers( page, size, sort ) );
+        return ResponseEntity.ok().body( service.getUsers( page-1, size, sort ) );
     }
 
     @GetMapping("/{username}")

@@ -20,11 +20,11 @@ public class AddressController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAddresses( @RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<?> getAddresses( @RequestParam(defaultValue = "1") int page,
                                            @RequestParam(defaultValue = "100") int size,
                                            @RequestParam(defaultValue = "city") String sort) {
 
-        return ResponseEntity.ok( service.getAddresses( page, size, sort ) );
+        return ResponseEntity.ok( service.getAddresses( page-1, size, sort ) );
     }
 
     @GetMapping("/{ownerId}")

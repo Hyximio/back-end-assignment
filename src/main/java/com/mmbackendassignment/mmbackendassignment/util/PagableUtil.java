@@ -15,7 +15,7 @@ public class PagableUtil {
 
         PageDto dto = new PageDto(
                 page.getNumberOfElements(),
-                page.getNumber(),
+                page.getNumber()+1, // page one = page zero
                 page.getTotalPages()
         );
 

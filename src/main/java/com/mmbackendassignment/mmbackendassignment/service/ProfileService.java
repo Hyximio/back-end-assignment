@@ -96,8 +96,6 @@ public class ProfileService {
             }
             Check.hasDependency( user.getProfile().getOwner(), "owner" );
 
-
-//            repo.deleteById(user.getProfile().getId());
             clientRepo.deleteById( user.getProfile().getClient().getId() );
             return "Deleted";
         }

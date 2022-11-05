@@ -129,9 +129,6 @@ class AddressServiceTest {
 
         PageRequest pr = PagableUtil.createPageRequest( pageIndex, pageSize, pageSort, AddressOutputDto.class );
 
-//        List<Address> data = new ArrayList<>();
-//        data.add( address1 );
-//        data.add( address2 );
         List<Address> data = List.of( address1, address2 );
         Page<Address> page = new PageImpl<>(data, pr, pageSize);
 
@@ -140,7 +137,7 @@ class AddressServiceTest {
         PageDto dto = service.getAddresses( pageIndex, pageSize, pageSort );
 
         assertEquals( dto.amount, 2 );
-        assertEquals( dto.currentPage, 1 );
+        assertEquals( dto.currentPage, 2 );
         assertEquals( dto.totalPages, 2 );
         assertEquals( dto.content.size(), 2);
 

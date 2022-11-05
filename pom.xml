@@ -12,7 +12,7 @@
 	<artifactId>mm-back-end-assignment</artifactId>
 	<version>1.0</version>
 	<name>mm-back-end-assignment</name>
-	<description>Novi Back-end Project</description>
+	<description>Novi Back-end Eindproject</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

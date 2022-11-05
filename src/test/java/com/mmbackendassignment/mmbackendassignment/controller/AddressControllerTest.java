@@ -74,7 +74,7 @@ class AddressControllerTest {
     @WithMockUser( username="admin", authorities="ADMIN")
     void getAddresses() throws Exception {
 
-        PageDto pageDto = new PageDto(10, 0, 1);
+        PageDto pageDto = new PageDto(10, 1, 1);
 
         ArrayList<AddressOutputDto> dtoList = new ArrayList<>();
         dtoList.add( addressOutput1 );
@@ -83,7 +83,7 @@ class AddressControllerTest {
 
         when( service.getAddresses(0, 10, "street") ).thenReturn( pageDto );
 
-        mockMvc.perform( get("/addresses?page=0&size=10&sort=street") )
+        mockMvc.perform( get("/addresses?page=1&size=10&sort=street") )
                 .andExpect( status().isOk() )
                 .andExpect(jsonPath("$.amount").value("10") )
                 .andExpect(jsonPath("$.content[0].city").value("Arnhem"))

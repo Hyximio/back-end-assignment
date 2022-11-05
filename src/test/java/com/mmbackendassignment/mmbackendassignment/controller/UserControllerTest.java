@@ -85,7 +85,7 @@ class UserControllerTest {
     @WithMockUser( username="admin", authorities="ADMIN")
     void getAllUsersAsAdmin() throws Exception {
 
-        PageDto pageDto = new PageDto(10, 0, 0);
+        PageDto pageDto = new PageDto(10, 1, 0);
 
         ArrayList<UserOutputDto> dtoList = new ArrayList<>();
         dtoList.add( userOutput1 );
@@ -96,7 +96,7 @@ class UserControllerTest {
 
         when( service.getUsers(0, 10, "username") ).thenReturn( pageDto );
 
-        mockMvc.perform( get("/users?page=0&size=10&sort=username") )
+        mockMvc.perform( get("/users?page=1&size=10&sort=username") )
                 .andExpect( status().isOk() )
                 .andExpect(jsonPath("$.amount").value("10") )
                 .andExpect(jsonPath("$.content[0].username").value("admin"))
